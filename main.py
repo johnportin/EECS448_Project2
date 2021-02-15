@@ -1,6 +1,5 @@
-
 import pygame
-# Initialize the pygame
+# Initialize the pygame 
 pygame.init()
 
 # Create the screen
