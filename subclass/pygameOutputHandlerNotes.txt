@@ -1,0 +1,4 @@
+information to parse:
+-coordinate
+-hit or miss
+-ship sprite locations
