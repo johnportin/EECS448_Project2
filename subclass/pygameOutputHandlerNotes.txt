@@ -1,4 +1,4 @@
 information to parse:
--coordinate
+-coordinate clicked
 -hit or miss
 -ship sprite locations
