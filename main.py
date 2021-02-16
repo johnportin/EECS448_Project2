@@ -5,10 +5,22 @@ pygame.init()
 # Create the screen
 screen = pygame.display.set_mode((1000, 500))
 
-# Title and Icon
-pygame.display.set_caption("Battleship")
-icon = pygame.image.load('img.png')
-pygame.display.set_icon(icon)
+# Setup.txt parser
+setupfile = open('setup.txt')
+asset = setupfile.readline()
+try:
+    # Title and Icon
+    pygame.display.set_caption(asset)
+    asset = setupfile.readline()
+    icon = pygame.image.load(asset)
+    pygame.display.set_icon(icon)
+
+    # Futher file processing will go here
+
+except ValueError:
+    print("Error: reading from file")
+
+setupfile.close()
 
 
 
