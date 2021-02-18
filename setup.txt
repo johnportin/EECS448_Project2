@@ -1,2 +1,2 @@
 Battleship
-icon.png
+Assets/icon.png
