@@ -54,10 +54,10 @@ def ask_user_for_board_position():
     return int(row) - 1, letters_to_numbers[column]
 
 def ask_user_for_ship_orientation():
-    orientation = input("Place ship vertically or horizontally (V or H):")
-    while orientation not in "VH":
-        print("Wrong input! It should be V or H")
-        orientation = input("Place ship vertically or horizontally (V or H):")
+    orientation = input("Place ship left, right, up, down (L,R,U,D):")
+    while orientation not in "LRUD":
+        print("Wrong input! It should be L,R,U, or D")
+        orientation = input("Place ship left, right, up, down (L,R,U,D):")
     return orientation
 
 def print_board(board):
@@ -87,18 +87,30 @@ for n in range(int(a)):
         b = ask_user_for_ship_orientation()
         # loop for spaces occupied for each ship. Sets up ships corresponding dimensions of ships and orientation
         for i in range(n + 1):
-            if (b == 'V'):
+            if (b == 'D'):
                 if (row_number + n > 9):
                     invalidPlacement = True
                 else:
                     invalidPlacement = False
                     board[row_number + i][column_number] = 'X'
-            else:
+            elif (b=='R'):
                 if (column_number + n > 9):
                     invalidPlacement = True
                 else:
                     invalidPlacement = False
                     board[row_number][column_number + i] = 'X'
+            elif (b=='U'):
+                if (row_number - n < 0):
+                    invalidPlacement = True
+                else:
+                    invalidPlacement = False
+                    board[row_number - i][column_number] = 'X'
+            elif (b=='L'):
+                if (column_number - n < 0):
+                    invalidPlacement = True
+                else:
+                    invalidPlacement = False
+                    board[row_number][column_number - i] = 'X'
         if (invalidPlacement == True):
             print("Ship was placed out of bounds. Please try again.")
     invalidPlacement=True
