@@ -53,6 +53,12 @@ def ask_user_for_board_position():
     # and it can assign it to variables
     return int(row) - 1, letters_to_numbers[column]
 
+def ask_user_for_ship_orientation():
+    orientation = input("Place ship vertically or horizontally (V or H):")
+    while orientation not in "VH":
+        print("Wrong input! It should be V or H")
+        orientation = input("Place ship vertically or horizontally (V or H):")
+    return orientation
 
 def print_board(board):
     # Show the board, one row at a time
@@ -65,17 +71,37 @@ def print_board(board):
         row_number = row_number + 1
 
 
+invalidPlacement=True
 # We want to loop for the number of battleships chosen by user
 a = ask_user_for_ship_number()
 for n in range(int(a)):
-    print("Where do you want ship ", n + 1, "?")
-    row_number, column_number = ask_user_for_board_position()
+    # loop that asks again for ship position information if user attempts to place invalidly
+    while invalidPlacement:
+        print("Where do you want ship ", n + 1, "?")
+        row_number, column_number = ask_user_for_board_position()
 
-    # Check that there are no repeats
-    if board[row_number][column_number] == 'X':
-        print("That spot already has a battleship in it!")
+        # Check that there are no repeats
+        if board[row_number][column_number] == 'X':
+            print("That spot already has a battleship in it!")
 
-    board[row_number][column_number] = 'X'
+        b = ask_user_for_ship_orientation()
+        # loop for spaces occupied for each ship. Sets up ships corresponding dimensions of ships and orientation
+        for i in range(n + 1):
+            if (b == 'V'):
+                if (row_number + n > 9):
+                    invalidPlacement = True
+                else:
+                    invalidPlacement = False
+                    board[row_number + i][column_number] = 'X'
+            else:
+                if (column_number + n > 9):
+                    invalidPlacement = True
+                else:
+                    invalidPlacement = False
+                    board[row_number][column_number + i] = 'X'
+        if (invalidPlacement == True):
+            print("Ship was placed out of bounds. Please try again.")
+    invalidPlacement=True
     print_board(board)
 
 
