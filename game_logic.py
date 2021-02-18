@@ -123,8 +123,13 @@ guesses_board = [
 
 
 # Keep playing until we guess all the ships
-guesses = 0
-while guesses < int(a):
+guess_number = [1,3,6,10,15,21]
+i = 0
+guesses = guess_number[0]
+while i != int(a):
+        guesses = guess_number[i]
+        i += 1
+for n in range(guesses):
     print("Guess a battleship location")
     row_number, column_number = ask_user_for_board_position()
 
