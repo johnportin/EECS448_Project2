@@ -102,7 +102,8 @@ def placement():
         # loop that asks again for ship position information if user attempts to place invalidly
         while invalidPlacement:
             print("Where do you want ship ", n + 1, "?")
-            column_number, row_number = getMouse()
+            column_number = letters_to_numbers[getMouse()[0]]
+            row_number = int(getMouse()[1]) - 1
 
             # Check that there are no repeats
             if board[row_number][column_number] == 'X':
@@ -155,7 +156,8 @@ def guessing():
         i += 1
     for n in range(guesses):
         print("Guess a battleship location")
-        column_number, row_number = getMouse()
+        column_number = letters_to_numbers[getMouse()[0]]
+        row_number = int(getMouse()[1]) - 1
 
         if guesses_board[row_number][column_number] != ' ':
             print("You have already guessed that place!")
