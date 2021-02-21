@@ -1,3 +1,27 @@
+"""
+Index of Class: Game Logic Functions
+
+def             ask_user_for_ship_number(): Asking the user the total number of ships.
+def             ask_user_for_board_position(): Asks for Board Position. By writing this as a function, we don't have to repeat it later. It's less code, it makes
+the rest easier to read, and if we improve this, we have to do it only once!
+def             def ask_user_for_ship_orientation(): Asks for orientation of ship. Left,Right, Up, Down.
+def             print_board(board):  Shows the board, one row at a time
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Example of Functions:
+
+def             ask_user_for_ship_number():         a = ask_user_for_ship_number(), for n in range(int(a))
+def             ask_user_for_board_position():      row_number, column_number = ask_user_for_board_position()
+def             ask_user_for_ship_orientation():    b = ask_user_for_ship_orientation(),  if (b == 'D'):
+def             print_board(board):                 print_board(board)
+
+"""
+
+
+
+
+
+
+
 # A board is a list of rows, and each row is a list of cells with either an 'X' (a battleship)
 # or a blank ' '
 board = [
