@@ -1,3 +1,6 @@
+from pygameInputHandler import *
+
+
 # A board is a list of rows, and each row is a list of cells with either an 'X' (a battleship)
 # or a blank ' '
 board = [
@@ -70,53 +73,6 @@ def print_board(board):
         print(" +-+-+-+-+-+-+-+-+-+-+")
         row_number = row_number + 1
 
-
-invalidPlacement=True
-# We want to loop for the number of battleships chosen by user
-a = ask_user_for_ship_number()
-for n in range(int(a)):
-    # loop that asks again for ship position information if user attempts to place invalidly
-    while invalidPlacement:
-        print("Where do you want ship ", n + 1, "?")
-        row_number, column_number = ask_user_for_board_position()
-
-        # Check that there are no repeats
-        if board[row_number][column_number] == 'X':
-            print("That spot already has a battleship in it!")
-
-        b = ask_user_for_ship_orientation()
-        # loop for spaces occupied for each ship. Sets up ships corresponding dimensions of ships and orientation
-        for i in range(n + 1):
-            if (b == 'D'):
-                if (row_number + n > 9):
-                    invalidPlacement = True
-                else:
-                    invalidPlacement = False
-                    board[row_number + i][column_number] = 'X'
-            elif (b=='R'):
-                if (column_number + n > 9):
-                    invalidPlacement = True
-                else:
-                    invalidPlacement = False
-                    board[row_number][column_number + i] = 'X'
-            elif (b=='U'):
-                if (row_number - n < 0):
-                    invalidPlacement = True
-                else:
-                    invalidPlacement = False
-                    board[row_number - i][column_number] = 'X'
-            elif (b=='L'):
-                if (column_number - n < 0):
-                    invalidPlacement = True
-                else:
-                    invalidPlacement = False
-                    board[row_number][column_number - i] = 'X'
-        if (invalidPlacement == True):
-            print("Ship was placed out of bounds. Please try again.")
-    invalidPlacement=True
-    print_board(board)
-
-
 # Now clear the screen, and the other player starts guessing
 print("\n"*50)
 
@@ -135,28 +91,82 @@ guesses_board = [
 
 
 # Keep playing until we guess all the ships
-guess_number = [1,3,6,10,15,21]
-i = 0
-guesses = guess_number[0]
-while i != int(a):
+def placement():
+
+    invalidPlacement=True
+    # We want to loop for the number of battleships chosen by user
+    global a 
+    a = ask_user_for_ship_number()
+    for n in range(int(a)):
+        # loop that asks again for ship position information if user attempts to place invalidly
+        while invalidPlacement:
+            print("Where do you want ship ", n + 1, "?")
+            column_number, row_number = getMouse()
+
+            # Check that there are no repeats
+            if board[row_number][column_number] == 'X':
+                print("That spot already has a battleship in it!")
+
+            b = ask_user_for_ship_orientation()
+            # loop for spaces occupied for each ship. Sets up ships corresponding dimensions of ships and orientation
+            for i in range(n + 1):
+                if (b == 'D'):
+                    if (row_number + n > 9):
+                        invalidPlacement = True
+                    else:
+                        invalidPlacement = False
+                        board[row_number + i][column_number] = 'X'
+                elif (b=='R'):
+                    if (column_number + n > 9):
+                        invalidPlacement = True
+                    else:
+                        invalidPlacement = False
+                        board[row_number][column_number + i] = 'X'
+                elif (b=='U'):
+                    if (row_number - n < 0):
+                        invalidPlacement = True
+                    else:
+                        invalidPlacement = False
+                        board[row_number - i][column_number] = 'X'
+                elif (b=='L'):
+                    if (column_number - n < 0):
+                        invalidPlacement = True
+                    else:
+                        invalidPlacement = False
+                        board[row_number][column_number - i] = 'X'
+            if (invalidPlacement == True):
+                print("Ship was placed out of bounds. Please try again.")
+        invalidPlacement=True
+        print_board(board)
+
+def guessing():
+    #Array of only possible guess numbers
+    guess_number = [1,3,6,10,15,21]
+    i = 0
+    guesses = guess_number[0]
+    while i != int(a):
         guesses = guess_number[i]
         i += 1
-for n in range(guesses):
-    print("Guess a battleship location")
-    row_number, column_number = ask_user_for_board_position()
+    for n in range(guesses):
+        print("Guess a battleship location")
+        column_number, row_number = getMouse()
 
-    if guesses_board[row_number][column_number] != ' ':
-        print("You have already guessed that place!")
-        continue
+        if guesses_board[row_number][column_number] != ' ':
+            print("You have already guessed that place!")
+            continue
 
-    # Check that there are no repeats
-    if board[row_number][column_number] == 'X':
-        print("HIT!")
-        guesses_board[row_number][column_number] = 'X'
-        guesses = guesses + 1
-    else:
-        guesses_board[row_number][column_number] = '.'
-        print("MISS!")
+        # Check that there are no repeats
+        if board[row_number][column_number] == 'X':
+            print("HIT!")
+            guesses_board[row_number][column_number] = 'X'
+            guesses = guesses + 1
+        else:
+            guesses_board[row_number][column_number] = '.'
+            print("MISS!")
 
-    print_board(guesses_board)
-print("GAME OVER!")
+        print_board(guesses_board)
+    print("GAME OVER!")
+
+def run():
+    placement()
+    guessing()

@@ -1,4 +1,6 @@
 import pygame
+from game_logic import *
+
 # Initialize the pygame 
 pygame.init()
 
