@@ -89,13 +89,14 @@ guesses_board = [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
 ]
 
+invalidPlacement=True
 
 # Keep playing until we guess all the ships
 def placement():
 
-    invalidPlacement=True
     # We want to loop for the number of battleships chosen by user
-    global a 
+    global a
+    global invalidPlacement
     a = ask_user_for_ship_number()
     for n in range(int(a)):
         # loop that asks again for ship position information if user attempts to place invalidly
@@ -107,37 +108,42 @@ def placement():
             if board[row_number][column_number] == 'X':
                 print("That spot already has a battleship in it!")
 
-            b = ask_user_for_ship_orientation()
-            # loop for spaces occupied for each ship. Sets up ships corresponding dimensions of ships and orientation
-            for i in range(n + 1):
-                if (b == 'D'):
-                    if (row_number + n > 9):
-                        invalidPlacement = True
-                    else:
-                        invalidPlacement = False
-                        board[row_number + i][column_number] = 'X'
-                elif (b=='R'):
-                    if (column_number + n > 9):
-                        invalidPlacement = True
-                    else:
-                        invalidPlacement = False
-                        board[row_number][column_number + i] = 'X'
-                elif (b=='U'):
-                    if (row_number - n < 0):
-                        invalidPlacement = True
-                    else:
-                        invalidPlacement = False
-                        board[row_number - i][column_number] = 'X'
-                elif (b=='L'):
-                    if (column_number - n < 0):
-                        invalidPlacement = True
-                    else:
-                        invalidPlacement = False
-                        board[row_number][column_number - i] = 'X'
-            if (invalidPlacement == True):
-                print("Ship was placed out of bounds. Please try again.")
+            orien(column_number, row_number, n)
+            print(invalidPlacement)
         invalidPlacement=True
         print_board(board)
+            # loop for spaces occupied for each ship. Sets up ships corresponding dimensions of ships and orientation
+
+def orien(column_number, row_number, n):
+    global invalidPlacement
+    b = ask_user_for_ship_orientation()
+    for i in range(n + 1):
+        if (b == 'D'):
+            if (row_number + n > 9):
+                invalidPlacement = True
+            else:
+                invalidPlacement = False
+                board[row_number + i][column_number] = 'X'
+        elif (b == 'R'):
+            if (column_number + n > 9):
+                invalidPlacement = True
+            else:
+                invalidPlacement = False
+                board[row_number][column_number + i] = 'X'
+        elif (b == 'U'):
+            if (row_number - n < 0):
+                invalidPlacement = True
+            else:
+                invalidPlacement = False
+                board[row_number - i][column_number] = 'X'
+        elif (b == 'L'):
+            if (column_number - n < 0):
+                invalidPlacement = True
+            else:
+                invalidPlacement = False
+                board[row_number][column_number - i] = 'X'
+    if (invalidPlacement == True):
+        print("Ship was placed out of bounds. Please try again.")
 
 def guessing():
     #Array of only possible guess numbers
