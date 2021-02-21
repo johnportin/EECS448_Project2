@@ -1,5 +1,5 @@
 import pygame
-from game_logic import *
+from .game_logic import run
 
 # Initialize the pygame 
 pygame.init()
@@ -24,16 +24,4 @@ except ValueError:
 
 setupfile.close()
 
-
-
-# Game Loop
-running=True
-while running:
-    # Basically event listener
-    for event in pygame.event.get():
-        # Allows you to exit pygame screen
-        if event.type == pygame.QUIT:
-            running = False
-
-    screen.fill((0, 128, 128))
-    pygame.display.update()
+run()
