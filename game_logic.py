@@ -3,7 +3,7 @@ from pygameInputHandler import *
 
 # A board is a list of rows, and each row is a list of cells with either an 'X' (a battleship)
 # or a blank ' '
-board = [
+board1= [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -15,6 +15,19 @@ board = [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
 ]
+board2= [
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+]
+game=[board1,board2]
 
 # We want to refer to columns by letter, but Python accesses lists by number. So we define
 # a dictionary to translate letters to the corresponding number.
@@ -76,7 +89,7 @@ def print_board(board):
 # Now clear the screen, and the other player starts guessing
 print("\n"*50)
 
-guesses_board = [
+guesses_board1 = [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -88,12 +101,27 @@ guesses_board = [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
 ]
+guesses_board2 = [
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+]
+gameGuess=[guesses_board1,guesses_board2]
 
 invalidPlacement=True
-
+player=0
+isShipsPlaced=False
 # Keep playing until we guess all the ships
 def placement():
-
+    global player
+    global isShipsPlaced
     # We want to loop for the number of battleships chosen by user
     global a
     global invalidPlacement
@@ -106,16 +134,18 @@ def placement():
             row_number = int(getMouse()[1]) - 1
 
             # Check that there are no repeats
-            if board[row_number][column_number] == 'X':
+            if game[player][row_number][column_number] == 'X':
                 print("That spot already has a battleship in it!")
 
             orien(column_number, row_number, n)
-            print(invalidPlacement)
         invalidPlacement=True
-        print_board(board)
-            # loop for spaces occupied for each ship. Sets up ships corresponding dimensions of ships and orientation
-
+        print_board(game[player])
+    if(player==1):
+        isShipsPlaced=True
+    switchplayers()
+# loop for spaces occupied for each ship. Sets up ships corresponding dimensions of ships and orientation
 def orien(column_number, row_number, n):
+    global player
     global invalidPlacement
     b = ask_user_for_ship_orientation()
     for i in range(n + 1):
@@ -124,29 +154,39 @@ def orien(column_number, row_number, n):
                 invalidPlacement = True
             else:
                 invalidPlacement = False
-                board[row_number + i][column_number] = 'X'
+                game[player][row_number + i][column_number] = 'X'
         elif (b == 'R'):
             if (column_number + n > 9):
                 invalidPlacement = True
             else:
                 invalidPlacement = False
-                board[row_number][column_number + i] = 'X'
+                game[player][row_number][column_number + i] = 'X'
         elif (b == 'U'):
             if (row_number - n < 0):
                 invalidPlacement = True
             else:
                 invalidPlacement = False
-                board[row_number - i][column_number] = 'X'
+                game[player][row_number - i][column_number] = 'X'
         elif (b == 'L'):
             if (column_number - n < 0):
                 invalidPlacement = True
             else:
                 invalidPlacement = False
-                board[row_number][column_number - i] = 'X'
+                game[player][row_number][column_number - i] = 'X'
     if (invalidPlacement == True):
         print("Ship was placed out of bounds. Please try again.")
+        
+def switchplayers():
+    global isShipsPlaced
+    global player
+    if(not isShipsPlaced):
+        print("Player 1 look away as Player 2 places ships")
+    else:
+        print("Player ",(player+1)," turn to guess")
+    player = (player+1)%2
 
 def guessing():
+
     #Array of only possible guess numbers
     guess_number = [1,3,6,10,15,21]
     i = 0
@@ -154,27 +194,37 @@ def guessing():
     while i != int(a):
         guesses = guess_number[i]
         i += 1
-    for n in range(guesses):
+    twoPlayerGuesses=[guesses,guesses]
+    shipSpacesHit=[0,0]
+    while (shipSpacesHit[0] != twoPlayerGuesses[0] and shipSpacesHit[1] != twoPlayerGuesses[1]):
         print("Guess a battleship location")
         column_number = letters_to_numbers[getMouse()[0]]
         row_number = int(getMouse()[1]) - 1
 
-        if guesses_board[row_number][column_number] != ' ':
+        if gameGuess[player][row_number][column_number] != ' ':
             print("You have already guessed that place!")
             continue
 
         # Check that there are no repeats
-        if board[row_number][column_number] == 'X':
+        if game[player][row_number][column_number] == 'X':
             print("HIT!")
-            guesses_board[row_number][column_number] = 'X'
-            guesses = guesses + 1
+            gameGuess[player][row_number][column_number] = 'X'
+            if(player==0):
+                shipSpacesHit[0]+=1
+            else:
+                shipSpacesHit[1] += 1
+
         else:
-            guesses_board[row_number][column_number] = '.'
+            gameGuess[player][row_number][column_number] = '.'
             print("MISS!")
 
-        print_board(guesses_board)
+        print_board(gameGuess[player])
+
+        switchplayers()
     print("GAME OVER!")
 
 def run():
+    #Call placement twice for both players
+    placement()
     placement()
     guessing()
