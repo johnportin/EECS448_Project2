@@ -23,5 +23,5 @@ except ValueError:
     print("Error: reading from file")
 
 setupfile.close()
-
+#calls run from game_logic to start game
 run()
