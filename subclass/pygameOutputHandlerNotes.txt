@@ -2,3 +2,6 @@ information to parse:
 -coordinate clicked
 -hit or miss
 -ship sprite locations
+
+
+

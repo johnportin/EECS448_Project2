@@ -1,5 +1,9 @@
 from pygameInputHandler import *
 
+#Code added by chauncey to use outut
+from pygameOutputHandler import pyBoard
+outputHandler = pyBoard()
+
 
 # A board is a list of rows, and each row is a list of cells with either an 'X' (a battleship)
 # or a blank ' '
@@ -223,8 +227,19 @@ def guessing():
         switchplayers()
     print("GAME OVER!")
 
-def run():
+def run(setupPack):
+    try:
+        outputHandler.beginGame(setupPack)
+        outputHandler.addShot("hit",(5,5))
+        outputHandler.updateBoard()
+        while True:
+            print(input("Ayyyyy"))
+    except KeyboardInterrupt:
+        outputHandler.quitGame()
+
     #Call placement twice for both players
-    placement()
-    placement()
-    guessing()
+    #placement()
+    #placement()
+    #guessing()
+
+
