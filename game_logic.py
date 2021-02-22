@@ -53,7 +53,7 @@ letters_to_numbers = {
 #Asking the user the total number of ships.
 def ask_user_for_ship_number():
     """
- ask user for ship number
+     ask user for ship number
         * @pre: none
         * @post: returns a number of ships wanted by player
         * @param: none
@@ -68,13 +68,13 @@ def ask_user_for_ship_number():
 # By writing this as a function, we don't have to repeat it later. It's less code, it makes
 # the rest easier to read, and if we improve this, we have to do it only once!
 def ask_user_for_board_position():
-  '''
- ask user for board position
+    '''
+    ask user for board position
         * @pre: none
         * @post: returns a position
         * @param: none
         * @description: asks user for a position to place their ship. Checks if valid col & row. Returns column and row.
-  ''' 
+    ''' 
     column = input("column (A to J):")
     while column not in "ABCDEFGHIJ":
         print("That column is wrong! It should be A, B, C, D, E, F, G, H, I, or J")
@@ -106,12 +106,13 @@ def ask_user_for_ship_orientation():
 
 def print_board(board):
     """
-print board
+    print board
         * @pre: takes in player board
         * @post: prints board
         * @param: player's board must be taken called with function.
         * @description: uses board to print a visual board including lines, rows, cols,
-"""    # Show the board, one row at a time
+    """
+    # Show the board, one row at a time
     print("  A B C D E F G H I J")
     print(" +-+-+-+-+-+-+-+-+-+-+")
     row_number = 1
@@ -154,13 +155,14 @@ player=0
 isShipsPlaced=False
 # Keep playing until we guess all the ships
 def placement():
- """
- placement
+    """
+    placement
         * @pre: none
         * @post: makes sure all selected number of ships are placed in valid locaton.
         * @param: none
         * @description: function creates loop that runs untill all ships are placed.
-    """     global player
+    """
+    global player
     global isShipsPlaced
     # We want to loop for the number of battleships chosen by user
     global a
@@ -186,8 +188,8 @@ def placement():
 
 # loop for spaces occupied for each ship. Sets up ships corresponding dimensions of ships and orientation
 def orientation(column_number, row_number, n):
-"""
-orientation
+    """
+    orientation
         * @pre: column number, row_number, n are passed as integers
         * @post: sets the mark 'X' for all cells the ship should occupy
         * @param: column number of the position clicked, row_number of the 
@@ -195,7 +197,7 @@ orientation
         * @description: uses player variable to mark correct board. Loop for 
             //spaces occupied for each ship to set dimentsions and based
             //on input for orientation fills cells the ship will occupy
-""" 
+    """ 
     global player
     global invalidPlacement
     b = ask_user_for_ship_orientation()
@@ -228,14 +230,14 @@ orientation
         print("Ship was placed out of bounds. Please try again.")
 
 def switchplayers():
-'''
-switchplayers
+    '''
+    switchplayers
         * @pre: None
         * @post: player variable is switched between 0 and 1 every time its called
         * @param: None
         * @description: Switches the global variable player and states which players turn it is. 
             //different statement when placing and guessing    global isShipsPlaced
-'''
+    '''
     global player
     if(not isShipsPlaced):
         print("Player 1 look away as Player 2 places ships")
@@ -244,14 +246,18 @@ switchplayers
     player = (player+1)%2
 
 def guessing():
-  '''
-     guessing
-     
-        * @pre: none
-        * @post: player guesses other players ship position
-        * @param: none
-        * @description: checks if guess is valid
-    '''
+    """
+    guessing
+            * @pre: placement already called twice (ships need to be already
+                //placed in placementBoard for both players
+            * @post: fills guessingBoards for both players and properly exits
+                //loop (GAME OVER) when all ships are sunk
+            * @param: None
+            * @description: updates the guessing boards for both players with
+                //'.' for misses and 'X' for hits. Each guess checks if all
+                //ship have been sunk for either player and exits guessing loop
+                //when someone wins
+    """
     #Array of only possible guess numbers
     guess_number = [1,3,6,10,15,21]
     i = 0
