@@ -3,6 +3,8 @@ Game Logic Class begins intial game state as it receives user input and communic
 
 """
 from pygameInputHandler import *
+from pygameOutputHandler import pyBoard
+outputHandler = pyBoard()
 
 # A board is a list of rows, and each row is a list of cells with either an 'X' (a battleship)
 # or a blank ' '
@@ -308,7 +310,12 @@ def guessing():
         print("Player 1 wins!")
     print("GAME OVER!")
 
-def run():
+
+def run(setupPack):
+    outputHandler.beginGame(setupPack)#Spawns Screen
+    outputHandler.addShot("hit",(5,5))#Adds Hit or miss, I'll add player in a sec
+    outputHandler.addShot("miss",(7,5))
+    outputHandler.updateBoard()#updates board, I'll add player in a sec
     #Call placement twice for both players
     getNumShips()
     placement()

@@ -151,6 +151,7 @@ class pyBoard:
         else:
             png = self.assetsList["miss"]
         pos = self.coordToBoard(coord)
+        self.spritePos[str(self.turn)] = pos
         self.spriteDict[str(self.turn)] = Piece(png, pos)
         self.turn += 1
           
