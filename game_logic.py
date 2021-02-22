@@ -27,7 +27,7 @@ board2= [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
 ]
-game=[board1,board2]
+placementBoards=[board1,board2]
 
 # We want to refer to columns by letter, but Python accesses lists by number. So we define
 # a dictionary to translate letters to the corresponding number.
@@ -113,7 +113,7 @@ guesses_board2 = [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
 ]
-gameGuess=[guesses_board1,guesses_board2]
+guessesBoards=[guesses_board1,guesses_board2]
 
 invalidPlacement=True
 player=0
@@ -134,17 +134,27 @@ def placement():
             row_number = int(getMouse()[1]) - 1
 
             # Check that there are no repeats
-            if game[player][row_number][column_number] == 'X':
+            if placementBoards[player][row_number][column_number] == 'X':
                 print("That spot already has a battleship in it!")
 
-            orien(column_number, row_number, n)
+            orientation(column_number, row_number, n)
         invalidPlacement=True
-        print_board(game[player])
+        print_board(placementBoards[player])
     if(player==1):
         isShipsPlaced=True
     switchplayers()
+"""
+orientation
+        * @pre: column number, row_number, n are passed as integers
+        * @post: sets the mark 'X' for all cells the ship should occupy
+        * @param: column number of the position clicked, row_number of the 
+            //position clicked, n is the number of the ship that is marked
+        * @description: uses player variable to mark correct board. Loop for 
+            //spaces occupied for each ship to set dimentsions and based
+            //on input for orientation fills cells the ship will occupy
+"""
 # loop for spaces occupied for each ship. Sets up ships corresponding dimensions of ships and orientation
-def orien(column_number, row_number, n):
+def orientation(column_number, row_number, n):
     global player
     global invalidPlacement
     b = ask_user_for_ship_orientation()
@@ -154,28 +164,35 @@ def orien(column_number, row_number, n):
                 invalidPlacement = True
             else:
                 invalidPlacement = False
-                game[player][row_number + i][column_number] = 'X'
+                placementBoards[player][row_number + i][column_number] = 'X'
         elif (b == 'R'):
             if (column_number + n > 9):
                 invalidPlacement = True
             else:
                 invalidPlacement = False
-                game[player][row_number][column_number + i] = 'X'
+                placementBoards[player][row_number][column_number + i] = 'X'
         elif (b == 'U'):
             if (row_number - n < 0):
                 invalidPlacement = True
             else:
                 invalidPlacement = False
-                game[player][row_number - i][column_number] = 'X'
+                placementBoards[player][row_number - i][column_number] = 'X'
         elif (b == 'L'):
             if (column_number - n < 0):
                 invalidPlacement = True
             else:
                 invalidPlacement = False
-                game[player][row_number][column_number - i] = 'X'
+                placementBoards[player][row_number][column_number - i] = 'X'
     if (invalidPlacement == True):
         print("Ship was placed out of bounds. Please try again.")
-        
+"""
+switchplayers
+        * @pre: None
+        * @post: player variable is switched between 0 and 1 every time its called
+        * @param: None
+        * @description: Switches the global variable player and states which players turn it is. 
+            //different statement when placing and guessing
+"""
 def switchplayers():
     global isShipsPlaced
     global player
@@ -201,24 +218,24 @@ def guessing():
         column_number = letters_to_numbers[getMouse()[0]]
         row_number = int(getMouse()[1]) - 1
 
-        if gameGuess[player][row_number][column_number] != ' ':
+        if guessesBoards[player][row_number][column_number] != ' ':
             print("You have already guessed that place!")
             continue
 
         # Check that there are no repeats
-        if game[player][row_number][column_number] == 'X':
+        if placementBoards[player][row_number][column_number] == 'X':
             print("HIT!")
-            gameGuess[player][row_number][column_number] = 'X'
+            guessesBoards[player][row_number][column_number] = 'X'
             if(player==0):
                 shipSpacesHit[0]+=1
             else:
                 shipSpacesHit[1] += 1
 
         else:
-            gameGuess[player][row_number][column_number] = '.'
+            guessesBoards[player][row_number][column_number] = '.'
             print("MISS!")
 
-        print_board(gameGuess[player])
+        print_board(guessesBoards[player])
 
         switchplayers()
     print("GAME OVER!")
