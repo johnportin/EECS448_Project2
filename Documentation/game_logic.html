@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module game_logic</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>game_logic</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Cjonel%5Cdocuments%5Ceecs%20448%20battleship%5Ceecs448_battleship%5Cgame_logic.py">c:\users\jonel\documents\eecs 448 battleship\eecs448_battleship\game_logic.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="pygame.html">pygame</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-ask_user_for_board_position"><strong>ask_user_for_board_position</strong></a>()</dt><dd><tt>#&nbsp;By&nbsp;writing&nbsp;this&nbsp;as&nbsp;a&nbsp;function,&nbsp;we&nbsp;don't&nbsp;have&nbsp;to&nbsp;repeat&nbsp;it&nbsp;later.&nbsp;It's&nbsp;less&nbsp;code,&nbsp;it&nbsp;makes<br>
+#&nbsp;the&nbsp;rest&nbsp;easier&nbsp;to&nbsp;read,&nbsp;and&nbsp;if&nbsp;we&nbsp;improve&nbsp;this,&nbsp;we&nbsp;have&nbsp;to&nbsp;do&nbsp;it&nbsp;only&nbsp;once!</tt></dd></dl>
+ <dl><dt><a name="-ask_user_for_ship_number"><strong>ask_user_for_ship_number</strong></a>()</dt><dd><tt>#Asking&nbsp;the&nbsp;user&nbsp;the&nbsp;total&nbsp;number&nbsp;of&nbsp;ships.</tt></dd></dl>
+ <dl><dt><a name="-ask_user_for_ship_orientation"><strong>ask_user_for_ship_orientation</strong></a>()</dt></dl>
+ <dl><dt><a name="-getNumShips"><strong>getNumShips</strong></a>()</dt></dl>
+ <dl><dt><a name="-guessing"><strong>guessing</strong></a>()</dt><dd><tt>guessing<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@pre:&nbsp;placement&nbsp;already&nbsp;called&nbsp;twice&nbsp;(ships&nbsp;need&nbsp;to&nbsp;be&nbsp;already&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//placed&nbsp;in&nbsp;placementBoard&nbsp;for&nbsp;both&nbsp;players<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@post:&nbsp;fills&nbsp;guessingBoards&nbsp;for&nbsp;both&nbsp;players&nbsp;and&nbsp;properly&nbsp;exits<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//loop&nbsp;(GAME&nbsp;OVER)&nbsp;when&nbsp;all&nbsp;ships&nbsp;are&nbsp;sunk<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param:&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@description:&nbsp;updates&nbsp;the&nbsp;guessing&nbsp;boards&nbsp;for&nbsp;both&nbsp;players&nbsp;with&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//'.'&nbsp;for&nbsp;misses&nbsp;and&nbsp;'X'&nbsp;for&nbsp;hits.&nbsp;Each&nbsp;guess&nbsp;checks&nbsp;if&nbsp;all<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//ship&nbsp;have&nbsp;been&nbsp;sunk&nbsp;for&nbsp;either&nbsp;player&nbsp;and&nbsp;exits&nbsp;guessing&nbsp;loop&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//when&nbsp;someone&nbsp;wins</tt></dd></dl>
+ <dl><dt><a name="-orientation"><strong>orientation</strong></a>(column_number, row_number, n)</dt><dd><tt>orientation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@pre:&nbsp;column&nbsp;number,&nbsp;row_number,&nbsp;n&nbsp;are&nbsp;passed&nbsp;as&nbsp;integers<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@post:&nbsp;sets&nbsp;the&nbsp;mark&nbsp;'X'&nbsp;for&nbsp;all&nbsp;cells&nbsp;the&nbsp;ship&nbsp;should&nbsp;occupy<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param:&nbsp;column&nbsp;number&nbsp;of&nbsp;the&nbsp;position&nbsp;clicked,&nbsp;row_number&nbsp;of&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//position&nbsp;clicked,&nbsp;n&nbsp;is&nbsp;the&nbsp;number&nbsp;of&nbsp;the&nbsp;ship&nbsp;that&nbsp;is&nbsp;marked<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@description:&nbsp;uses&nbsp;player&nbsp;variable&nbsp;to&nbsp;mark&nbsp;correct&nbsp;board.&nbsp;Loop&nbsp;for<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//spaces&nbsp;occupied&nbsp;for&nbsp;each&nbsp;ship&nbsp;to&nbsp;set&nbsp;dimentsions&nbsp;and&nbsp;based<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//on&nbsp;input&nbsp;for&nbsp;orientation&nbsp;fills&nbsp;cells&nbsp;the&nbsp;ship&nbsp;will&nbsp;occupy</tt></dd></dl>
+ <dl><dt><a name="-placement"><strong>placement</strong></a>()</dt><dd><tt>orientation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@pre:&nbsp;column&nbsp;number,&nbsp;row_number,&nbsp;n&nbsp;are&nbsp;passed&nbsp;as&nbsp;integers<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@post:&nbsp;sets&nbsp;the&nbsp;mark&nbsp;'X'&nbsp;for&nbsp;all&nbsp;cells&nbsp;the&nbsp;ship&nbsp;should&nbsp;occupy<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param:&nbsp;column&nbsp;number&nbsp;of&nbsp;the&nbsp;position&nbsp;clicked,&nbsp;row_number&nbsp;of&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//position&nbsp;clicked,&nbsp;n&nbsp;is&nbsp;the&nbsp;number&nbsp;of&nbsp;the&nbsp;ship&nbsp;that&nbsp;is&nbsp;marked<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@description:&nbsp;uses&nbsp;player&nbsp;variable&nbsp;to&nbsp;mark&nbsp;correct&nbsp;board.&nbsp;Loop&nbsp;for<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//spaces&nbsp;occupied&nbsp;for&nbsp;each&nbsp;ship&nbsp;to&nbsp;set&nbsp;dimentsions&nbsp;and&nbsp;based<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//on&nbsp;input&nbsp;for&nbsp;orientation&nbsp;fills&nbsp;cells&nbsp;the&nbsp;ship&nbsp;will&nbsp;occupy</tt></dd></dl>
+ <dl><dt><a name="-print_board"><strong>print_board</strong></a>(board)</dt></dl>
+ <dl><dt><a name="-run"><strong>run</strong></a>()</dt></dl>
+ <dl><dt><a name="-switchplayers"><strong>switchplayers</strong></a>()</dt><dd><tt>switchplayers<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@pre:&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@post:&nbsp;player&nbsp;variable&nbsp;is&nbsp;switched&nbsp;between&nbsp;0&nbsp;and&nbsp;1&nbsp;every&nbsp;time&nbsp;its&nbsp;called<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param:&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@description:&nbsp;Switches&nbsp;the&nbsp;global&nbsp;variable&nbsp;player&nbsp;and&nbsp;states&nbsp;which&nbsp;players&nbsp;turn&nbsp;it&nbsp;is.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//different&nbsp;statement&nbsp;when&nbsp;placing&nbsp;and&nbsp;guessing</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>board1</strong> = [[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']]<br>
+<strong>board2</strong> = [[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']]<br>
+<strong>guessesBoards</strong> = [[[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']], [[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']]]<br>
+<strong>guesses_board1</strong> = [[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']]<br>
+<strong>guesses_board2</strong> = [[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']]<br>
+<strong>invalidPlacement</strong> = True<br>
+<strong>isShipsPlaced</strong> = False<br>
+<strong>letters_to_numbers</strong> = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9}<br>
+<strong>placementBoards</strong> = [[[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']], [[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']]]<br>
+<strong>player</strong> = 0</td></tr></table>
+</body></html>
