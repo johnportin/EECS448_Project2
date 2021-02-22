@@ -1,37 +1,3 @@
-"""
-Current plans:
--Finish modyfying pyboard code to function with new ruleset[ ]
---Setup method[ ]
----piece dictionary[ ]
----sprite dictionary[ ]
-
--Draw empty board[ ]
---choose colors[ ]
---place extra details[ ]
-
-
--Create parser for game logic[ ]
---create update method to replace board.command[]
--create method for game logic to pass in data[ ]
-
-
-Stretch Goals:
--Figure out async, as its applications seem incredible[ ]
---async FX method to tie to mouse position[ ]
---async animation method for on click stuff
-
-
-Misc Goals:
--Make/find assets[ ]
---fill folder and test assets collecting
--modify piece class[ ]
---color modification
---transperancy key (see pygame surface color key)
--Look through pygame for other 
-
-
-"""
-
 from time import sleep
 import pygame as p
 import glob
@@ -85,8 +51,10 @@ class pyBoard:
         self.numbers = ["1","2","3","4","5","6","7","8","9","10"]
 
         #Live Info
-        self.spriteDict = {}
-        self.spritePos = {}
+        self.spriteDictP1 = {}
+        self.spritePosP1 = {}
+        self.spriteDictP2 = {}
+        self.spritePosP2 = {}
         self.coordDict = {}
         self.gameBegin = 1#1 = game setup, 0 = game ready
         self.turn = 0 
@@ -123,7 +91,7 @@ class pyBoard:
     #Quick helper function for getting board coordinates
     def coordToBoard(self,coord):
         x = 87.5 + coord[0]*75
-        y = 87.5 + coord[1]*75
+        y = 770 - coord[1]*75
         return((x,y))
 
     #Unused for time being :(
@@ -145,14 +113,19 @@ class pyBoard:
 
 
     #Creates a sprite at coordinate to represent hit or miss
-    def addShot(self,mark,coord):
+    def addShot(self,mark,coord, player):
         if(mark == "hit"):
             png = self.assetsList["hit"]
         else:
             png = self.assetsList["miss"]
         pos = self.coordToBoard(coord)
-        self.spritePos[str(self.turn)] = pos
-        self.spriteDict[str(self.turn)] = Piece(png, pos)
+        if(player):
+            self.spritePosP1[str(self.turn)] = pos
+            self.spriteDictP1[str(self.turn)] = Piece(png, pos)
+        else:
+            self.spritePosP2[str(self.turn)] = pos
+            self.spriteDictP2[str(self.turn)] = Piece(png, pos)
+        
         self.turn += 1
           
     #Used to draw the initial board           
@@ -175,11 +148,15 @@ class pyBoard:
         
 
     #Function used to update the board per game interraction
-    def __updateBoard(self):
+    def __updateBoard(self,player):
         self.screen.fill((0,0,0))
         self.createCleanPlate()
-        for x in self.spritePos:
-            self.screen.blit(self.spriteDict[x].surf, self.spriteDict[x].rect)
+        if(player):
+            for x in self.spritePosP1:
+                self.screen.blit(self.spriteDictP1[x].surf, self.spriteDictP1[x].rect)
+        else:
+            for x in self.spritePosP2:
+                self.screen.blit(self.spriteDictP2[x].surf, self.spriteDictP2[x].rect)
 
 
     #Prints current game info
@@ -218,8 +195,9 @@ class pyBoard:
         p.quit()
 
     #Bublic facing update call, will eventually use extra info 
-    def updateBoard(self):
-        self.__updateBoard()
+    def updateBoard(self,mark,player,coord):
+        self.addShot(mark,coord,player)
+        self.__updateBoard(player)
         p.display.flip()
 
 

@@ -297,9 +297,7 @@ def guessing():
 
 def run(setupPack):
     outputHandler.beginGame(setupPack)#Spawns Screen
-    outputHandler.addShot("hit",(5,5))#Adds Hit or miss, I'll add player in a sec
-    outputHandler.addShot("miss",(7,5))
-    outputHandler.updateBoard()#updates board, I'll add player in a sec
+    outputHandler.updateBoard("hit",player =1,coord = (1,1))
     #Call placement twice for both players
     '''
     *@pre: None 
