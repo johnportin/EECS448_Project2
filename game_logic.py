@@ -277,14 +277,10 @@ def guessing():
     print("GAME OVER!")
 
 def run(setupPack):
-    try:
-        outputHandler.beginGame(setupPack)
-        outputHandler.addShot("hit",(5,5))
-        outputHandler.updateBoard()
-        while True:
-            print(input("Ayyyyy"))
-    except KeyboardInterrupt:
-        outputHandler.quitGame()
+    outputHandler.beginGame(setupPack)#Spawns Screen
+    outputHandler.addShot("hit",(5,5))#Adds Hit or miss, I'll add player in a sec
+    outputHandler.addShot("miss",(7,5))
+    outputHandler.updateBoard()#updates board, I'll add player in a sec
 
     #Call placement twice for both players
     getNumShips()
