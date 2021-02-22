@@ -40,6 +40,12 @@
 &nbsp;&nbsp;&nbsp;*&nbsp;@post:&nbsp;returns&nbsp;a&nbsp;direction&nbsp;of&nbsp;ship.<br>
 &nbsp;&nbsp;&nbsp;*&nbsp;@param:&nbsp;none<br>
 &nbsp;&nbsp;&nbsp;*&nbsp;@description:&nbsp;asks&nbsp;user&nbsp;for&nbsp;orientation.&nbsp;checks&nbsp;if&nbsp;its&nbsp;a&nbsp;valid&nbsp;direction&nbsp;(left,&nbsp;right,&nbsp;up,&nbsp;down)</tt></dd></dl>
+ <dl><dt><a name="-getNumShips"><strong>getNumShips</strong></a>()</dt><dd><tt>getNumShips<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@pre:&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@post:&nbsp;create&nbsp;global&nbsp;variable&nbsp;for&nbsp;number&nbsp;of&nbsp;ship<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param:&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@description:&nbsp;simply&nbsp;creates&nbsp;global&nbsp;variable&nbsp;for<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//number&nbsp;of&nbsp;ships&nbsp;that&nbsp;is&nbsp;the&nbsp;used&nbsp;in&nbsp;the&nbsp;placement</tt></dd></dl>
  <dl><dt><a name="-guessing"><strong>guessing</strong></a>()</dt><dd><tt>guessing<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@pre:&nbsp;placement&nbsp;already&nbsp;called&nbsp;twice&nbsp;(ships&nbsp;need&nbsp;to&nbsp;be&nbsp;already<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//placed&nbsp;in&nbsp;placementBoard&nbsp;for&nbsp;both&nbsp;players<br>
@@ -53,13 +59,13 @@
  <dl><dt><a name="-orientation"><strong>orientation</strong></a>(column_number, row_number, n)</dt><dd><tt>orientation<br>
 &nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@pre:&nbsp;column&nbsp;number,&nbsp;row_number,&nbsp;n&nbsp;are&nbsp;passed&nbsp;as&nbsp;integers<br>
 &nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@post:&nbsp;sets&nbsp;the&nbsp;mark&nbsp;'X'&nbsp;for&nbsp;all&nbsp;cells&nbsp;the&nbsp;ship&nbsp;should&nbsp;occupy<br>
-&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param:&nbsp;column&nbsp;number&nbsp;of&nbsp;the&nbsp;position&nbsp;clicked,&nbsp;row_number&nbsp;of&nbsp;the&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param:&nbsp;column&nbsp;number&nbsp;of&nbsp;the&nbsp;position&nbsp;clicked,&nbsp;row_number&nbsp;of&nbsp;the<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//position&nbsp;clicked,&nbsp;n&nbsp;is&nbsp;the&nbsp;number&nbsp;of&nbsp;the&nbsp;ship&nbsp;that&nbsp;is&nbsp;marked<br>
-&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@description:&nbsp;uses&nbsp;player&nbsp;variable&nbsp;to&nbsp;mark&nbsp;correct&nbsp;board.&nbsp;Loop&nbsp;for&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@description:&nbsp;uses&nbsp;player&nbsp;variable&nbsp;to&nbsp;mark&nbsp;correct&nbsp;board.&nbsp;Loop&nbsp;for<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//spaces&nbsp;occupied&nbsp;for&nbsp;each&nbsp;ship&nbsp;to&nbsp;set&nbsp;dimentsions&nbsp;and&nbsp;based<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//on&nbsp;input&nbsp;for&nbsp;orientation&nbsp;fills&nbsp;cells&nbsp;the&nbsp;ship&nbsp;will&nbsp;occupy</tt></dd></dl>
  <dl><dt><a name="-placement"><strong>placement</strong></a>()</dt><dd><tt>placement<br>
-&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@pre:&nbsp;none<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@pre:&nbsp;getNumShips&nbsp;is&nbsp;called<br>
 &nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@post:&nbsp;makes&nbsp;sure&nbsp;all&nbsp;selected&nbsp;number&nbsp;of&nbsp;ships&nbsp;are&nbsp;placed&nbsp;in&nbsp;valid&nbsp;locaton.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param:&nbsp;none<br>
 &nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@description:&nbsp;function&nbsp;creates&nbsp;loop&nbsp;that&nbsp;runs&nbsp;untill&nbsp;all&nbsp;ships&nbsp;are&nbsp;placed.</tt></dd></dl>
@@ -68,16 +74,13 @@
 &nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@post:&nbsp;prints&nbsp;board<br>
 &nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param:&nbsp;player's&nbsp;board&nbsp;must&nbsp;be&nbsp;taken&nbsp;called&nbsp;with&nbsp;function.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@description:&nbsp;uses&nbsp;board&nbsp;to&nbsp;print&nbsp;a&nbsp;visual&nbsp;board&nbsp;including&nbsp;lines,&nbsp;rows,&nbsp;cols,</tt></dd></dl>
- <dl><dt><a name="-run"><strong>run</strong></a>()</dt><dd><tt>*@pre:&nbsp;None&nbsp;<br>
-*@post:&nbsp;properly&nbsp;runs&nbsp;the&nbsp;battleship&nbsp;game&nbsp;&nbsp;<br>
-*@param:none&nbsp;<br>
-*@description:&nbsp;calls&nbsp;placement&nbsp;twice&nbsp;for&nbsp;both&nbsp;players&nbsp;then&nbsp;calls&nbsp;guessing&nbsp;to&nbsp;execute&nbsp;the&nbsp;guessing&nbsp;part&nbsp;of&nbsp;the&nbsp;game</tt></dd></dl>
+ <dl><dt><a name="-run"><strong>run</strong></a>(setupPack)</dt></dl>
  <dl><dt><a name="-switchplayers"><strong>switchplayers</strong></a>()</dt><dd><tt>switchplayers<br>
-&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@pre:&nbsp;None<br>
-&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@post:&nbsp;player&nbsp;variable&nbsp;is&nbsp;switched&nbsp;between&nbsp;0&nbsp;and&nbsp;1&nbsp;every&nbsp;time&nbsp;its&nbsp;called<br>
-&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param:&nbsp;None<br>
-&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@description:&nbsp;Switches&nbsp;the&nbsp;global&nbsp;variable&nbsp;player&nbsp;and&nbsp;states&nbsp;which&nbsp;players&nbsp;turn&nbsp;it&nbsp;is.&nbsp;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//different&nbsp;statement&nbsp;when&nbsp;placing&nbsp;and&nbsp;guessing&nbsp;&nbsp;&nbsp;&nbsp;global&nbsp;isShipsPlaced</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@pre:&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@post:&nbsp;player&nbsp;variable&nbsp;is&nbsp;switched&nbsp;between&nbsp;0&nbsp;and&nbsp;1&nbsp;every&nbsp;time&nbsp;its&nbsp;called<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@param:&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;@description:&nbsp;Switches&nbsp;the&nbsp;global&nbsp;variable&nbsp;player&nbsp;and&nbsp;states&nbsp;which&nbsp;players&nbsp;turn&nbsp;it&nbsp;is.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//different&nbsp;statement&nbsp;when&nbsp;placing&nbsp;and&nbsp;guessing</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">
@@ -93,6 +96,7 @@
 <strong>invalidPlacement</strong> = True<br>
 <strong>isShipsPlaced</strong> = False<br>
 <strong>letters_to_numbers</strong> = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9}<br>
+<strong>outputHandler</strong> = &lt;pygameOutputHandler.pyBoard object&gt;<br>
 <strong>placementBoards</strong> = [[[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']], [[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']]]<br>
 <strong>player</strong> = 0</td></tr></table>
 </body></html>
