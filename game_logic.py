@@ -298,6 +298,9 @@ def guessing():
 def run(setupPack):
     outputHandler.beginGame(setupPack)#Spawns Screen
     outputHandler.updateBoard("hit",player =1,coord = (1,1))
+
+
+    
     #Call placement twice for both players
     '''
     *@pre: None 
