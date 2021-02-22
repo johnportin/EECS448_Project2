@@ -4,10 +4,9 @@ Game Logic Class begins intial game state as it receives user input and communic
 """
 from pygameInputHandler import *
 
-
 # A board is a list of rows, and each row is a list of cells with either an 'X' (a battleship)
 # or a blank ' '
-board1= [
+board1 = [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -19,7 +18,7 @@ board1= [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
 ]
-board2= [
+board2 = [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -31,7 +30,7 @@ board2= [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
 ]
-placementBoards=[board1,board2]
+placementBoards = [board1, board2]
 
 # We want to refer to columns by letter, but Python accesses lists by number. So we define
 # a dictionary to translate letters to the corresponding number.
@@ -48,7 +47,7 @@ letters_to_numbers = {
     'J': 9,
 }
 
-#Asking the user the total number of ships.
+# Asking the user the total number of ships.
 def ask_user_for_ship_number():
     """
      ask user for ship number
@@ -56,7 +55,7 @@ def ask_user_for_ship_number():
         * @post: returns a number of ships wanted by player
         * @param: none
         * @description: asks user for number of ships to use in game and checks if number is valid.
-    """    
+    """
     ships = input("Input number of ships to place:")
     while ships not in "123456":
         print("Wrong number! It should be 1, 2, 3, 4, 5, or 6")
@@ -72,7 +71,7 @@ def ask_user_for_board_position():
         * @post: returns a position
         * @param: none
         * @description: asks user for a position to place their ship. Checks if valid col & row. Returns column and row.
-    ''' 
+    '''
     column = input("column (A to J):")
     while column not in "ABCDEFGHIJ":
         print("That column is wrong! It should be A, B, C, D, E, F, G, H, I, or J")
@@ -94,8 +93,8 @@ def ask_user_for_ship_orientation():
         * @post: returns a direction of ship.
         * @param: none
         * @description: asks user for orientation. checks if its a valid direction (left, right, up, down)
-    '''     
-    
+    '''
+
     orientation = input("Place ship left, right, up, down (L,R,U,D):")
     while orientation not in "LRUD":
         print("Wrong input! It should be L,R,U, or D")
@@ -120,7 +119,7 @@ def print_board(board):
         row_number = row_number + 1
 
 # Now clear the screen, and the other player starts guessing
-print("\n"*50)
+print("\n" * 50)
 
 guesses_board1 = [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -146,26 +145,37 @@ guesses_board2 = [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
 ]
-guessesBoards=[guesses_board1,guesses_board2]
+guessesBoards = [guesses_board1, guesses_board2]
 
-invalidPlacement=True
-player=0
-isShipsPlaced=False
+invalidPlacement = True
+player = 0
+isShipsPlaced = False
+
+def getNumShips():
+    """
+    getNumShips
+            * @pre: None
+            * @post: create global variable for number of ship
+            * @param: None
+            * @description: simply creates global variable for
+            //number of ships that is the used in the placement
+    """
+    global a
+    a = ask_user_for_ship_number()
+
 # Keep playing until we guess all the ships
 def placement():
     """
-    placement
-        * @pre: none
-        * @post: makes sure all selected number of ships are placed in valid locaton.
-        * @param: none
-        * @description: function creates loop that runs untill all ships are placed.
+        placement
+            * @pre: getNumShips is called
+            * @post: makes sure all selected number of ships are placed in valid locaton.
+            * @param: none
+            * @description: function creates loop that runs untill all ships are placed.
     """
     global player
     global isShipsPlaced
     # We want to loop for the number of battleships chosen by user
-    global a
     global invalidPlacement
-    a = ask_user_for_ship_number()
     for n in range(int(a)):
         # loop that asks again for ship position information if user attempts to place invalidly
         while invalidPlacement:
@@ -178,10 +188,10 @@ def placement():
                 print("That spot already has a battleship in it!")
 
             orientation(column_number, row_number, n)
-        invalidPlacement=True
+        invalidPlacement = True
         print_board(placementBoards[player])
-    if(player==1):
-        isShipsPlaced=True
+    if (player == 1):
+        isShipsPlaced = True
     switchplayers()
 
 # loop for spaces occupied for each ship. Sets up ships corresponding dimensions of ships and orientation
@@ -190,12 +200,12 @@ def orientation(column_number, row_number, n):
     orientation
         * @pre: column number, row_number, n are passed as integers
         * @post: sets the mark 'X' for all cells the ship should occupy
-        * @param: column number of the position clicked, row_number of the 
+        * @param: column number of the position clicked, row_number of the
             //position clicked, n is the number of the ship that is marked
-        * @description: uses player variable to mark correct board. Loop for 
+        * @description: uses player variable to mark correct board. Loop for
             //spaces occupied for each ship to set dimentsions and based
             //on input for orientation fills cells the ship will occupy
-    """ 
+    """
     global player
     global invalidPlacement
     b = ask_user_for_ship_orientation()
@@ -228,14 +238,15 @@ def orientation(column_number, row_number, n):
         print("Ship was placed out of bounds. Please try again.")
 
 def switchplayers():
-    '''
+    """
     switchplayers
-        * @pre: None
-        * @post: player variable is switched between 0 and 1 every time its called
-        * @param: None
-        * @description: Switches the global variable player and states which players turn it is. 
-            //different statement when placing and guessing    global isShipsPlaced
-    '''
+            * @pre: None
+            * @post: player variable is switched between 0 and 1 every time its called
+            * @param: None
+            * @description: Switches the global variable player and states which players turn it is.
+                //different statement when placing and guessing
+    """
+    global isShipsPlaced
     global player
     if(not isShipsPlaced):
         print("Player 1 look away as Player 2 places ships")
@@ -289,17 +300,17 @@ def guessing():
 
         print_board(guessesBoards[player])
 
-        switchplayers()
+        if(shipSpacesHit[0] != twoPlayerGuesses[0] and shipSpacesHit[1] != twoPlayerGuesses[1]):
+            switchplayers()
+    if(shipSpacesHit[0] == twoPlayerGuesses[0]):
+        print("Player 2 wins!")
+    else:
+        print("Player 1 wins!")
     print("GAME OVER!")
 
 def run():
     #Call placement twice for both players
-    '''
-    *@pre: None 
-    *@post: properly runs the battleship game  
-    *@param:none 
-    *@description: calls placement twice for both players then calls guessing to execute the guessing part of the game
-    '''
+    getNumShips()
     placement()
     placement()
     guessing()
