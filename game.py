@@ -41,9 +41,11 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+                mainMenu.update(event)
+
+
 
             mainMenu.game = self
-            mainMenu.update()
             pygame.display.flip()
             self.clock.tick(60)
 
@@ -58,6 +60,8 @@ mainMenu = Menu(game = game,
                 plainColorArray = [DARKBLUE] * 3,
                 highlightedColorArray = [RED] * 3,
                 centeredPositionArray = [(400, 300), (400, 400), (400, 500)],
-                actionArray = [None] * 3)
+                actionArray = [startAction, None, quitGame])
+
+game.currentMenu = mainMenu
 
 game.gameLoop()

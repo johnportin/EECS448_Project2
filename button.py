@@ -18,11 +18,6 @@ class Button(Sprite):
     def __init__(self, text, fontSize, textColor, plainColor, highlightedColor, centeredPosition, action = None):
         Sprite.__init__(self)
         self.mouseOver = False
-        # self.textSurf = create_surface_with_text('text', fontSize, textColor, bgColor)
-        # self.bgSurf = pygame.Surface((BTNWIDTH, BTNHEIGHT))
-        # self.bgSurf.fill(DARKBLUE)
-        # self.bgSurf.blit(self.textSurf, (25, 25)) # need to calculate center of button
-        # self.image = self.bgSurf
         self.centeredPosition = centeredPosition
 
         plainText = createText(text, fontSize, textColor, plainColor)
@@ -44,11 +39,11 @@ class Button(Sprite):
         self.rect = self.pos
         self.action = action # implement a callback feature
 
-
-
-    def update(self, mousePos):
+    def update(self, mousePos, event):
         if self.pos.collidepoint(mousePos):
             self.image = self.highlightedSurf
+            if event.type == pygame.MOUSEBUTTONUP:
+                self.action()
         else:
             self.image = self.plainSurf
 
