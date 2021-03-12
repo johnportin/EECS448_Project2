@@ -89,8 +89,11 @@ class Board:
 		self.markers.add(Piece(png, pos))
 		self.drawBoard()
 
-	# Places ships on board
-	def placeShips(self):
+	def addShips():
+		pass
+
+	# Shows ships on board
+	def showShips(self):
 		self.ships.draw(self.surface)
 		self.drawBoard()
 
