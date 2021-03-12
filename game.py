@@ -22,6 +22,11 @@ WHITE = (255, 255, 255)
 GREEN = (0, 200, 0)
 BTNHEIGHT = 50
 BTNWIDTH = 100
+BOARD_POS = {
+	"board1": (50, 50),
+	"board2": (900, 50)
+}
+MAX_SHIPS = 6
 
 
 class Game:
@@ -37,8 +42,8 @@ class Game:
 		}
 
 		# Might not keep these.
-		self.board1 = Board(self.screen, (50,50))
-		self.board2 = Board(self.screen, (900,50))
+		self.board1 = Board(self.screen, BOARD_POS["board1"])
+		self.board2 = Board(self.screen, BOARD_POS["board2"])
 
 		# Set icon and app window title
 		pygame.display.set_caption("Battleship")
@@ -48,7 +53,8 @@ class Game:
 		while True:
 			for event in pygame.event.get():
 				if self.currentMenu != None:
-					self.currentMenu.update(event)
+					pass
+					#self.currentMenu.update(event)
 				if event.type == pygame.QUIT:
 					pygame.quit()
 					sys.exit()
@@ -80,25 +86,99 @@ class Game:
 			ships = input("Input number of ships to place:")
 		return ships
 
-	def setup():
-		# Implement drag and drop to place ships
-		pass
+	# def setup():
+	# 	# Implement drag and drop to place ships
+	# 	pass:
+
+	# Maybe add allowed squares and allowed lengths or something
+	bannedPositions = []
+	allowedLengths = list(range(0, MAX_SHIPS+1))
+	def placeShips(self): # might move this into board.py
+		# Mouse click on square = origin of ship
+		pos, brd = coords_to_pos(getMouse())
+
+		# Hover - tries potential ships
+		running = True
+		while running:
+			x = pygame.mouse.get_pos()[0]
+			y = pygame.mouse.get_pos()[1]
+
+			hover, hover_board = coords_to_pos((x,y))
+			print(hover)
+
+			valid = isValidShip(pos, brd, hover, hover_board)
+
+			if (valid):
+				# Draw transparent ship, make it go away when position changes
+		
+			# Click - click valid, add ship. Click invalid, stay in hover mode
+			for event in pygame.event.get():
+				if event.type == pygame.MOUSEBUTTONDOWN:
+					if valid:
+						# Place ship for real
+						# Add new data to bannedPositoins and allowedLEngths aray
+						running = False
+
+		# Do some checks or something to run again
+
+	# I am quarantining this ugly code				
+	def isValidShip(pos, brd, hover, hover_board):
+	# Add exception later to where you can only place on the correct board
+	if brd == hover_board: # Can't go off board
+		
+		# Vertical Placement
+		if (pos[0] == hover[0]):
+			length = abs(pos[1] - hover[1])
+
+			# Only one ship of each length and can't exceed max length
+			if (length in allowedLengths):
+				# Can't overlap other ships
+				for y in range(0, length+1):
+					minY = pos[0] if pos[1] < hover[1] else hover[1]
+					if (pos[0], minY+y) in bannedPositions:
+						return False
+				return True
+
+		# Horizontal Placement
+		if (pos[1] == hover[1]):
+			length = abs(pos[0] - hover[0])
+			# Only one ship of each length and can't exceed max length
+			if (length in allowedLengths):
+				# Can't overlap other ships
+				valid = True
+				for x in range(0, length+1):
+					minX = pos[0] if pos[0] < hover[0] else hover[0]
+					if (minX+x, pos[1]) in bannedPositions:
+						return False
+				return True
+	return False
+
 
 	def guess():
 		# Guess
-		print("Guess a battleship location")
-		column_number = letters_to_numbers[getMouse()[0]]
-		row_number = int(getMouse()[1]) - 1
-
 		# Check valid
 		# Is hit or miss?
 		# Update board
+		pass
 
 	def gameOver():
 		# Clear everything
 		# Change to victory menu
 		pass
 
+def coords_to_pos(coords):
+	# Converts to a square on a board. Maybe turn into function.
+	if (coords[0] >= BOARD_POS["board1"][0]) and (coords[0] <= BOARD_POS["board1"][0]+750) and (coords[1] >= BOARD_POS["board1"][1]) and (coords[1] <= BOARD_POS["board1"][1]+750):
+		brd = "board1"
+	elif (coords[0] >= BOARD_POS["board2"][0]) and (coords[0] <= BOARD_POS["board2"][0]+750) and (coords[1] >= BOARD_POS["board2"][1]) and (coords[1] <= BOARD_POS["board2"][1]+750):
+		brd = "board2"
+	else:
+		return (0, 0), "none"
+
+	row = int((coords[0] - BOARD_POS[brd][0]) / 75)
+	col = int((750 - coords[1] + BOARD_POS[brd][1]) / 75)
+
+	return (row, col), brd
 
 game = Game()
 
@@ -114,6 +194,10 @@ mainMenu = Menu(game = game,
 				actionArray = [startAction, defaultAction, quitGame])
 
 game.currentMenu = mainMenu
-# game.board1.drawBoard()
-# game.board1.addShot("hit", (9, 1))
+
+game.board1.drawBoard()
+game.board2.drawBoard()
+pygame.display.flip()
+game.placeShips()
+
 game.gameLoop()
