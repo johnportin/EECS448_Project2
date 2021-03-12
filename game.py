@@ -41,6 +41,8 @@ class Game:
 		board2 = Board()
 
 		# Set icon and app window title
+		pygame.display.set_caption("Battleship")
+		pygame.display.set_icon(pygame.image.load("Assets/icon.png"))
 
 	def gameLoop(self):
 		while True:
@@ -54,19 +56,43 @@ class Game:
 			pygame.display.flip()
 			self.clock.tick(60)
 
+		# Dunno where to put this
+		if (gameState.state == "something"):
+			# Execute a function
+
 
 	# This functions get triggered by gameLoop depending on gameState
 	def start():
 		# Dunno if this will be useful, but templating.
+
+		# self.screen = p.display.set_mode(size = (850,850))
+		# self.createCleanPlate() # Replaced with Board.drawBoard()
+		# p.display.flip()
+
 		# Prompt for number of ships
+		# This is from their code
+		ships = input("Input number of ships to place:")
+		while ships not in "123456":
+		    print("Wrong number! It should be 1, 2, 3, 4, 5, or 6")
+		    ships = input("Input number of ships to place:")
+		return ships
 
 	def setup():
 		# Implement drag and drop to place ships
 
 	def guess():
 		# Guess
-		# Miss/hit logic
+		print("Guess a battleship location")
+        column_number = letters_to_numbers[getMouse()[0]]
+        row_number = int(getMouse()[1]) - 1
+
+		# Check valid
+		# Is hit or miss?
 		# Update board
+
+		return {
+
+		}
 
 	def gameOver():
 		# Clear everything
