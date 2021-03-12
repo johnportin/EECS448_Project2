@@ -9,11 +9,11 @@ pygame.init()
 
 class Piece(pygame.sprite.Sprite):
 	def __init__(self,png,pos):
-		super(Piece,self).__init__() # What does this do - Joshua
-		self.surf = pygame.image.load(png)
-		self.rect = self.surf.get_rect()
+		super(Piece,self).__init__()
+		self.image = pygame.image.load(png)
+		self.rect = self.image.get_rect()
 		self.rect.center = pos
-		pygame.Surface.set_colorkey(self.surf,[0,0,0])
+		pygame.Surface.set_colorkey(self.image,[0,0,0])
 
 	def update(self,move):
 		self.rect.center = move
@@ -21,61 +21,63 @@ class Piece(pygame.sprite.Sprite):
 class Board:
 	# Put new board stuff here
 
-	def __init__(self, screen):
+	def __init__(self, screen, pos):
 		self.screen = screen
-		self.sprites = []
-		self.ships = [] # Locations of intact ships
-		self.boardSize = pygame.Rect(50, 50, 750, 750)
+		self.markers = [] # Array of hit/miss markers
+		self.ships = pygame.sprite.Group() # Array of ship sprites
+		self.boardSize = pygame.Rect(pos[0], pos[1], 750, 750)
 
 		self.letters = ["A","B","C","D","E","F","G","H","I","J"]
 		self.numbers = ["1","2","3","4","5","6","7","8","9","10"]
 		
-		# initialization stuff tbd, might go in game
 		# Retrieve Assets
+		self.assetsList = {}
 		self.assetNameKeys = ["BS 1","BS 2","BS 3","BS 4","BS 5","BS 6","hit","miss"]
 		dir_path = os.path.dirname(os.path.realpath(__file__))
-		#with my key in a dictionary. 
-
 		assetsFolder = glob.glob(dir_path + "/Assets/" + "*")
-		self.assetsList = {}
 		for asset in assetsFolder:
-			# idk if this part even works
 			for key in self.assetNameKeys:
 				if(asset.find(key) != -1):
 					self.assetsList[key] = asset
-		
-	### ======================================== ###
-	### Carryover functions, not fully implemented ###
-	### ======================================== ###
+
+		# For testing
+		png = self.assetsList["BS 2"]
+		pos = self.coordToBoard((1,1))
+		self.ships.add(Piece(png, pos))
 
 	#Used to draw the initial board           
 	def drawBoard(self):
 		# Draws the screen
-		#self.screen.fill((128,128,128)) # Background color
+		self.screen.fill((128,128,128)) # Background color
 		pygame.draw.rect(self.screen,(83,209,212),self.boardSize) # Board itself
+
+		left = self.boardSize[0]
+		top = self.boardSize[1]
+		width = self.boardSize[2]
+		height = self.boardSize[3]
 
 		# Gridlines and labels
 		for x in range(0,11):
-			xPos = 50+(x)*75
-			pygame.draw.line(self.screen, (0,0,0), (xPos,50), (xPos,800))
+			xPos = left + (x)*width/10
+			pygame.draw.line(self.screen, (0,0,0), (xPos,top), (xPos,top+height))
 
 		for x in range(0,11):
-			yPos = 50+(x)*75
-			pygame.draw.line(self.screen, (0,0,0), (50,yPos), (800,yPos))
+			yPos = top + (x)*height/10
+			pygame.draw.line(self.screen, (0,0,0), (left,yPos), (left+width,yPos))
 
 		textType = pygame.font.Font('freesansbold.ttf', 20)
 		for letter in self.letters:
 			textSurf, textRect = self.text_objects(letter, textType)
 			x = ord(letter) - 65
-			pos = x*75 + 87
-			textRect.center = (pos, 825)
+			pos = x*width/10 + 87 # Make this flexible
+			textRect.center = (pos, 825) # Make this flexible
 			self.screen.blit(textSurf,textRect)
 
 		for number in self.numbers:
 			textSurf, textRect = self.text_objects(number, textType)
 			x = int(number) - 1
-			pos = 760- x*75
-			textRect.center = (25, pos)
+			pos = 760- x*height/10 # Make this flexible
+			textRect.center = (25, pos) # Make this flexible
 			self.screen.blit(textSurf,textRect)
 
 	#Creates a sprite at coordinate to represent hit or miss
@@ -88,16 +90,16 @@ class Board:
 		pos = self.coordToBoard(coord)
 		
 		sprite = Piece(png, pos)
-		self.screen.blit(sprite.surf, sprite.rect)
+		self.screen.blit(sprite.image, sprite.rect)
 		#self.sprites.append()
 
 	# Places ships on board
-	def placeShips(self,ships,player):
-		pass
+	def placeShips(self):
+		self.ships.draw(self.screen)
 
 	# Hides ships
-	def hideShips(self,ships,player):
-		pass
+	def hideShips(self):
+		self.ship.clear(something, something)
 
 	#Used to place text on screen
 	def text_objects(self,text,font):

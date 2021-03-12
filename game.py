@@ -27,7 +27,7 @@ BTNWIDTH = 100
 class Game:
 	def __init__(self):
 		pygame.init()
-		self.screen = pygame.display.set_mode((800, 600)) #(850, 850)
+		self.screen = pygame.display.set_mode((1620, 850)) #(800, 600)
 		self.clock = pygame.time.Clock()
 		self.currentMenu = None # Use this to switch between menus
 		self.gameState = {
@@ -36,8 +36,8 @@ class Game:
 		}
 
 		# Might not keep these.
-		self.board1 = Board(self.screen)
-		self.board2 = Board(self.screen)
+		self.board1 = Board(self.screen, (50,50))
+		self.board2 = Board(self.screen, (850,50))
 
 		# Set icon and app window title
 		pygame.display.set_caption("Battleship")
@@ -51,7 +51,7 @@ class Game:
 					sys.exit()
 
 			mainMenu.game = self
-			mainMenu.update()
+			#mainMenu.update()
 			pygame.display.flip()
 			self.clock.tick(60)
 
@@ -109,6 +109,8 @@ mainMenu = Menu(game = game,
 				highlightedColorArray = [RED] * 3,
 				centeredPositionArray = [(400, 300), (400, 400), (400, 500)],
 				actionArray = [None] * 3)
-# game.board1.drawBoard()
-# game.board1.addShot("hit", (9, 1))
+game.board1.drawBoard()
+#game.board2.drawBoard()
+game.board1.addShot("hit", (9, 1))
+game.board1.placeShips()
 game.gameLoop()
