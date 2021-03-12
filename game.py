@@ -23,17 +23,24 @@ GREEN = (0, 200, 0)
 BTNHEIGHT = 50
 BTNWIDTH = 100
 
+WINDOWWIDTH = 800
+WINDOWHEIGHT = 600
+
 
 class Game:
-	def __init__(self):
+	def __init__(self, width, height):
 		pygame.init()
-		self.screen = pygame.display.set_mode((800, 600)) #(850, 850)
+		# dimension of the default window
+		self.width = width
+		self.height = height
+		self.screen = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT)) #(850, 850)
 		self.clock = pygame.time.Clock()
 		self.currentMenu = None # Use this to switch between menus
 		self.gameState = {
 			"state": "start",
 			"turn": "n/a"
 		}
+		self.difficulty = 0
 
 		# Might not keep these.
 		self.board1 = Board(self.screen)
@@ -43,17 +50,22 @@ class Game:
 		pygame.display.set_caption("Battleship")
 		pygame.display.set_icon(pygame.image.load("Assets/icon.png"))
 
+		# Options
+		self.mute = False
+
+
 	def gameLoop(self):
 		while True:
 			for event in pygame.event.get():
 				if self.currentMenu != None:
-					self.currentMenu.update(event)
+					self.currentMenu.update(game.screen)
 				if event.type == pygame.QUIT:
 					pygame.quit()
 					sys.exit()
+				for button in self.currentMenu.buttons:
+					button.checkEvent(event)
 
-			if self.currentMenu != None:
-				self.currentMenu.game = self
+			self.currentMenu.draw(self.screen)
 			pygame.display.flip()
 			self.clock.tick(60)
 
@@ -99,7 +111,29 @@ class Game:
 		pass
 
 
-game = Game()
+game = Game(WINDOWWIDTH, WINDOWHEIGHT)
+
+def optionAction():
+    game.currentMenu = optionsMenu
+
+def returnAction():
+	game.currentMenu = mainMenu
+
+def difficultyAction():
+	game.difficulty += 1
+	game.difficulty %= 3
+	for button in game.currentMenu.buttons:
+		if not button.name.find('diff'): # Changes the difficulty text (why need NOT?)
+			button.text = difficultyDict[game.difficulty]
+			button.renderText()
+	# print('difficulty = {}'.format(game.difficulty))
+
+def muteAction():
+	game.mute = not game.mute
+	print("muted = " + str(game.mute))
+
+
+difficultyDict = {0: 'easy', 1: 'hard', 2: 'impossible'}
 
 mainMenu = Menu(game = game,
 				title = 'Main Menu',
@@ -110,7 +144,20 @@ mainMenu = Menu(game = game,
 				plainColorArray = [DARKBLUE] * 3,
 				highlightedColorArray = [RED] * 3,
 				centeredPositionArray = [(400, 300), (400, 400), (400, 500)],
-				actionArray = [startAction, defaultAction, quitGame])
+				actionArray = [startAction, optionAction, quitGame])
+
+optionsMenu = Menu(game = game,
+				title = 'Options',
+				bgColor = BLUE,
+				btnTextArray = ['option1', 'diff:' + difficultyDict[game.difficulty], 'Return', 'Mute'],
+				fontSize = 20,
+				textColorArray = [WHITE] * 4,
+				plainColorArray = [DARKBLUE] * 4,
+				highlightedColorArray = [RED] * 4,
+				centeredPositionArray = [(400, 200), (400, 300), (400, 400), (400, 500)],
+				actionArray = [defaultAction, difficultyAction, returnAction, muteAction])
+
+
 
 game.currentMenu = mainMenu
 # game.board1.drawBoard()
