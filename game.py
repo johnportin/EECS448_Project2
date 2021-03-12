@@ -30,10 +30,11 @@ WINDOWHEIGHT = 600
 class Game:
 	def __init__(self, width, height):
 		pygame.init()
-		# dimension of the default window
 		self.width = width
 		self.height = height
-		self.screen = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT)) #(850, 850)
+		#self.screen = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT)) #(850, 850)
+		self.screen = pygame.display.set_mode((1670, 850)) #(800, 600)
+		self.screen.fill((128,128,128)) # Background color
 		self.clock = pygame.time.Clock()
 		self.currentMenu = None # Use this to switch between menus
 		self.gameState = {
@@ -43,8 +44,8 @@ class Game:
 		self.difficulty = 0
 
 		# Might not keep these.
-		self.board1 = Board(self.screen)
-		self.board2 = Board(self.screen)
+		self.board1 = Board(self.screen, (50,50))
+		self.board2 = Board(self.screen, (900,50))
 
 		# Set icon and app window title
 		pygame.display.set_caption("Battleship")
