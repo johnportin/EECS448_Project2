@@ -44,7 +44,6 @@ class pyBoard:
 
         #CleanPlate info. Basically, this will be what I use to draw an empty board each frame.
         #I May make this customizable later
-        self.screenDim = screen
         self.boardDim = p.Rect(50,50,screen[0]-100, screen[1]-100)
         self.lineSpace = screen[0]/10
         self.letters = ["A","B","C","D","E","F","G","H","I","J"]

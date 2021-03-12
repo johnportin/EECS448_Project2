@@ -15,7 +15,6 @@ from button import Button
 
 pygame.freetype.init()
 
-
 BLUE = (106, 159, 181)
 DARKBLUE = (0, 0, 55)
 RED = (255, 50, 50)
@@ -28,7 +27,7 @@ BTNWIDTH = 100
 class Game:
 	def __init__(self):
 		pygame.init()
-		self.screen = pygame.display.set_mode((800, 600))
+		self.screen = pygame.display.set_mode((800, 600)) #(850, 850)
 		self.clock = pygame.time.Clock()
 		self.currentMenu = None # Use this to switch between menus
 		self.gameState = {
@@ -37,8 +36,8 @@ class Game:
 		}
 
 		# Might not keep these.
-		board1 = Board()
-		board2 = Board()
+		self.board1 = Board(self.screen)
+		self.board2 = Board(self.screen)
 
 		# Set icon and app window title
 		pygame.display.set_caption("Battleship")
@@ -59,6 +58,7 @@ class Game:
 		# Dunno where to put this
 		if (gameState.state == "something"):
 			# Execute a function
+			pass
 
 
 	# This functions get triggered by gameLoop depending on gameState
@@ -73,30 +73,28 @@ class Game:
 		# This is from their code
 		ships = input("Input number of ships to place:")
 		while ships not in "123456":
-		    print("Wrong number! It should be 1, 2, 3, 4, 5, or 6")
-		    ships = input("Input number of ships to place:")
+			print("Wrong number! It should be 1, 2, 3, 4, 5, or 6")
+			ships = input("Input number of ships to place:")
 		return ships
 
 	def setup():
 		# Implement drag and drop to place ships
+		pass
 
 	def guess():
 		# Guess
 		print("Guess a battleship location")
-        column_number = letters_to_numbers[getMouse()[0]]
-        row_number = int(getMouse()[1]) - 1
+		column_number = letters_to_numbers[getMouse()[0]]
+		row_number = int(getMouse()[1]) - 1
 
 		# Check valid
 		# Is hit or miss?
 		# Update board
 
-		return {
-
-		}
-
 	def gameOver():
 		# Clear everything
 		# Change to victory menu
+		pass
 
 
 game = Game()
@@ -111,5 +109,6 @@ mainMenu = Menu(game = game,
 				highlightedColorArray = [RED] * 3,
 				centeredPositionArray = [(400, 300), (400, 400), (400, 500)],
 				actionArray = [None] * 3)
-
+# game.board1.drawBoard()
+# game.board1.addShot("hit", (9, 1))
 game.gameLoop()
