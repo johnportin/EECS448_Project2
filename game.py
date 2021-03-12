@@ -46,12 +46,14 @@ class Game:
 	def gameLoop(self):
 		while True:
 			for event in pygame.event.get():
+				if self.currentMenu != None:
+					self.currentMenu.update(event)
 				if event.type == pygame.QUIT:
 					pygame.quit()
 					sys.exit()
 
-			mainMenu.game = self
-			mainMenu.update()
+			if self.currentMenu != None:
+				self.currentMenu.game = self
 			pygame.display.flip()
 			self.clock.tick(60)
 
@@ -108,7 +110,9 @@ mainMenu = Menu(game = game,
 				plainColorArray = [DARKBLUE] * 3,
 				highlightedColorArray = [RED] * 3,
 				centeredPositionArray = [(400, 300), (400, 400), (400, 500)],
-				actionArray = [None] * 3)
+				actionArray = [startAction, defaultAction, quitGame])
+
+game.currentMenu = mainMenu
 # game.board1.drawBoard()
 # game.board1.addShot("hit", (9, 1))
 game.gameLoop()

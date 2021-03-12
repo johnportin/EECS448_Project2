@@ -14,3 +14,6 @@ def quitGame():
 
 def startAction():
     print('start')
+
+def defaultAction():
+    print('no action defined')
