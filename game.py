@@ -6,7 +6,7 @@ from pygame.sprite import Sprite
 from board import *
 
 from button import *
-from aux import *
+from auxx import *
 
 
 from menu import Menu
