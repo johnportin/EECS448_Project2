@@ -22,7 +22,7 @@ WHITE = (255, 255, 255)
 GREEN = (0, 200, 0)
 BTNHEIGHT = 50
 BTNWIDTH = 100
-MAX_SHIPS = 6
+MAX_SHIPS = 3
 
 #WINDOWWIDTH = 800
 #WINDOWHEIGHT = 600
@@ -56,7 +56,8 @@ class Game:
 			"board2": self.board2
 		}
 		self.currentPlayer = 'board1'
-		self.maxShips = 6
+		self.otherPlayer = 'board2'
+		self.maxShips = 3
 		self.bannedPositions = []
 		self.allowedLengths = list(range(1, MAX_SHIPS+1))
 
@@ -117,8 +118,9 @@ class Game:
 						sys.exit()
 					for button in self.state.buttons:
 						button.checkEvent(event)
-						# self.state.update(self.screen)
+						print(self.state)
 						# self.state.buttons.checkEvent(event)
+				self.changeState()
 
 			if self.stateName == 'start':
 				for event in pygame.event.get():
@@ -135,7 +137,14 @@ class Game:
 						pygame.quit()
 						sys.exit()
 					if event.type == pygame.MOUSEBUTTONDOWN:
-						self.guess(event, 'board1', 'board2')
+						if self.guess(event, self.currentPlayer, self.otherPlayer):
+							if self.currentPlayer == 'board1':
+								self.otherPlayer = 'board1'
+								self.currentPlayer = 'board2'
+							else:
+								self.currentPlayer = 'board1'
+								self.otherPlayer = 'board2'
+
 
 
 			if self.state:
@@ -264,40 +273,24 @@ class Game:
 		self.boards[targetBoard].hideShips()
 
 		mouseCoords = event.pos
-		print(mouseCoords)
 		pos = coordToBoard(mouseCoords)
+		print('target board rect = {}'.format(self.boards[targetBoard].rect))
 
 		valid = self.boards[targetBoard].rect.collidepoint(mouseCoords)
 		for marker in self.boards[targetBoard].markers:
 			if marker.rect.collidepoint(mouseCoords):
 				valid = False
 
-
-		# # Guess
-		# valid = False
-		# while (not valid):
-		# 	print("hi")
-		# 	pos, brd = coordToBoard(getMouse())
-		#
-		# 	# Click validation
-		# 	tmp = True
-		# 	for marker in self.boards[targetBoard].markers:
-		# 		if (marker.pos == pos):
-		# 			tmp = False
-		# 	if (brd != targetBoard):
-		# 		tmp = False
-		# 	valid = tmp
-
 		# Is hit or miss?
 		if valid:
 			marker = "miss"
 			for ship in self.boards[targetBoard].ships:
 				for shipPos in ship.pos:
-					print('{} ==?== {}'.format(pos, shipPos))
 					if pos[0] == shipPos:
-						print('hit at {}'.format(shipPos))
 						marker = "hit"
 			self.boards[targetBoard].addShot(marker, pos)
+		print('valid = ' + str(valid))
+		return valid
 
 	def gameOver(self):
 		# Clear everything
@@ -306,13 +299,11 @@ class Game:
 
 	def optionAction(self):
 		self.stateName = 'optionsMenu'
-		self.changeState()
 
 
 	def returnAction(self):
 		print('return called')
 		self.stateName = 'mainMenu'
-		self.changeState()
 
 	def difficultyAction(self):
 		self.difficulty += 1
@@ -334,7 +325,6 @@ class Game:
 
 	def startAction(self):
 		self.stateName = 'start'
-		self.changeState()
 
 	def muteAction(self):
 		self.mute = not self.mute
