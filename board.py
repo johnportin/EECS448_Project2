@@ -22,6 +22,11 @@ class Marker(pygame.sprite.Sprite):
 	def __init__(self,png,pos):
 		super(Marker,self).__init__()
 		self.image = pygame.image.load(png)
+		w, h = self.image.get_size()
+		w *= (boardSize / 750) / 8
+		h *= (boardSize / 750) / 8
+		self.image = pygame.transform.scale(self.image, (int(w), int(h)))
+
 		self.rect = self.image.get_rect()
 		self.rect.topleft = coordToBoard(pos[0])
 		pygame.Surface.set_colorkey(self.image,[0,0,0])
@@ -30,6 +35,11 @@ class Ship(pygame.sprite.Sprite):
 	def __init__(self,png,pos):
 		super(Ship,self).__init__()
 		self.image = pygame.image.load(png)
+		w, h = self.image.get_size()
+		w *= (boardSize / 750) / 8
+		h *= (boardSize / 750) / 8
+		self.image = pygame.transform.scale(self.image, (int(w), int(h)))
+
 		self.rect = self.image.get_rect()
 		self.rect.topleft = coordToBoard(pos[0])
 		pygame.Surface.set_colorkey(self.image,[0,0,0])
