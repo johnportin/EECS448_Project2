@@ -12,6 +12,8 @@ WINDOWWIDTH = info.current_w-100 # 1670
 WINDOWHEIGHT =  info.current_h-100 #850
 boardSize = (WINDOWWIDTH/2) - 100 # 750
 
+BG_COLOR = (83,209,212)
+
 #Quick helper function for getting board coordinates
 def coordToBoard(coord):
 	x = coord[0] * (boardSize/10)
@@ -71,10 +73,10 @@ class Board:
 				if(asset.find(key) != -1):
 					self.assetsList[key] = asset
 
-		self.surface.fill((83,209,212)) #what is this ah oops -katelyn
+		self.surface.fill(BG_COLOR) #what is this ah oops -katelyn
 
 	def clearBoard(self):
-		self.surface.fill((83,209,212))
+		self.surface.fill(BG_COLOR)
 		self.markers.empty()
 		self.ships.empty()
 
@@ -152,7 +154,7 @@ class Board:
 	def hideShips(self):
 		self.drawShips = False
 		bg = pygame.Surface((boardSize, boardSize))
-		bg.fill((83,209,212))
+		bg.fill(BG_COLOR)
 		self.ships.clear(self.surface, bg)
 		self.drawBoard()
 		pygame.display.flip()
