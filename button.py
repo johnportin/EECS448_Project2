@@ -4,7 +4,7 @@ import pygame.freetype
 from pygame.sprite import RenderUpdates
 from pygame.sprite import Sprite
 
-from aux import createText
+from auxx import createText
 
 BLUE = (106, 159, 181)
 DARKBLUE = (0, 0, 55)
