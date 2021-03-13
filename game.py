@@ -133,6 +133,11 @@ class Game:
 					if event.type == pygame.QUIT:
 						pygame.quit()
 						sys.exit()
+					if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+						self.stateName = 'mainMenu'
+						for board in self.boards.values():
+							board.clearBoard()
+						break
 					if event.type == pygame.MOUSEBUTTONDOWN:
 						if self.guess(event, self.currentPlayer, self.otherPlayer):
 							if self.currentPlayer == 'board1':
