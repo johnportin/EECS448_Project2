@@ -11,7 +11,7 @@ info = pygame.display.Info()
 screen_width,screen_height = info.current_w,info.current_h
 WINDOWWIDTH = screen_width-100 # 1670
 WINDOWHEIGHT =  screen_height-100 #850
-boardSize = 750 # (WINDOWWIDTH/2) - 100 # 750
+boardSize = 1000 # (WINDOWWIDTH/2) - 100 # 750
 
 #Quick helper function for getting board coordinates
 def coordToBoard(coord):

@@ -43,7 +43,7 @@ class Game:
 		}
 		self.currentPlayer = 'board1'
 		self.otherPlayer = 'board2'
-		self.maxShips = 3
+		self.maxShips = 6
 		self.bannedPositions = []
 		self.allowedLengths = list(range(1, self.maxShips+1))
 
@@ -187,7 +187,6 @@ class Game:
 		brd = "none"
 		while (brd == "none"):
 			pos, brd = coordToBoard(getMouse())
-		self.boards[activeBoard].addShot("hit", pos)
 
 		# Hover - tries potential ships
 		running = True
