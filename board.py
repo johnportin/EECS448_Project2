@@ -7,14 +7,21 @@ from pygame import event
 
 pygame.init()
 
+info = pygame.display.Info()
+screen_width,screen_height = info.current_w,info.current_h
+WINDOWWIDTH = screen_width-100
+WINDOWHEIGHT = screen_height-100
+boardWidth = (WINDOWWIDTH/2) - 100
+
 #Quick helper function for getting board coordinates
 def coordToBoard(coord):
 	print('coord = ' + str(coord))
 	print(type(coord), 'x = ', type(coord[0]), 'y = ', type(coord[1]))
-	x = coord[0] * 75
-	y = 750 - (coord[1] + 1) * 75
+	x = coord[0] * 75 #what are these controlling?###########################################
+	y = boardWidth - (coord[1] + 1) * 75 # ^^
+
 	# x = coord[0]*75 # 87.5 + coord[0]*75
-	# y = 750 - (int(coord[1])+1)*75 # 770 - coord[1]*75
+	# y = boardWidth - (int(coord[1])+1)*75 # 770 - coord[1]*75
 	return((x,y))
 
 class Marker(pygame.sprite.Sprite):
@@ -37,7 +44,7 @@ class Ship(pygame.sprite.Sprite):
 class Board:
 	def __init__(self, screen, pos):
 		self.screen = screen
-		self.surface = pygame.Surface((750, 750))
+		self.surface = pygame.Surface((boardWidth, boardWidth))
 		self.rect = self.surface.get_rect()
 		self.markers = pygame.sprite.Group() # Array of hit/miss markers
 		self.ships = pygame.sprite.Group() # Array of ship sprites
@@ -58,31 +65,36 @@ class Board:
 				if(asset.find(key) != -1):
 					self.assetsList[key] = asset
 
-		self.surface.fill((83,209,212))
+		self.surface.fill((83,209,212)) #what is this ah######################################
 
 	#Used to draw the initial board
 	def drawBoard(self):
 		# Gridlines and labels
 		for x in range(0,11):
-			xPos = (x)*750/10
-			pygame.draw.line(self.surface, (0,0,0), (xPos,0), (xPos,750))
+			xPos = (x)*boardWidth/10
+			pygame.draw.line(self.surface, (0,0,0), (xPos,0), (xPos,boardWidth))
 
 		for y in range(0,11):
-			yPos = (y)*750/10
-			pygame.draw.line(self.surface, (0,0,0), (0,yPos), (750,yPos))
+			yPos = (y)*boardWidth/10
+			pygame.draw.line(self.surface, (0,0,0), (0,yPos), (boardWidth,yPos))
 
 		textType = pygame.font.Font('freesansbold.ttf', 20)
+		#Drawing the letters on axis
 		for letter in self.letters:
 			textSurf, textRect = self.text_objects(letter, textType)
 			x = ord(letter) - 65
-			xpos = x*750/10 + self.pos[0] + 37.5
-			textRect.center = (xpos, 825) # Make this flexible
+			#xpos = x*boardWidth/10 + self.pos[0] + 37.5
+			xpos = x*boardWidth/10 + self.pos[0] + (boardWidth*.05)
+			#textRect.center = (xpos, 825) # Make this flexible
+			textRect.center = (xpos, 25) # Make this flexible
 			self.screen.blit(textSurf,textRect)
 
+		#Drawing the numbers on axis
 		for number in self.numbers:
 			textSurf, textRect = self.text_objects(number, textType)
 			x = int(number) - 1
-			ypos = 760- x*750/10 # Make this flexible
+			#ypos = 760 - x*boardWidth/10 # Make this flexible
+			ypos = boardWidth + (boardWidth*.05) - x*boardWidth/10 # Make this flexible
 			textRect.center = (self.pos[0]-25, ypos) # Make this flexible
 			self.screen.blit(textSurf,textRect)
 
@@ -128,7 +140,7 @@ class Board:
 	# Hides ships
 	def hideShips(self):
 		self.drawShips = False
-		bg = pygame.Surface((750, 750))
+		bg = pygame.Surface((boardWidth, boardWidth))
 		bg.fill((83,209,212))
 		self.ships.clear(self.surface, bg)
 		self.drawBoard()

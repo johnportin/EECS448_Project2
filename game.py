@@ -27,11 +27,12 @@ MAX_SHIPS = 6
 #WINDOWWIDTH = 800
 #WINDOWHEIGHT = 600
 
-#Making the window fit the player's screen better
+#Making the window fit the player's screen
 info = pygame.display.Info()
 screen_width,screen_height = info.current_w,info.current_h
 WINDOWWIDTH = screen_width-100
 WINDOWHEIGHT = screen_height-100
+boardWidth = (WINDOWWIDTH/2) - 100
 
 
 class Game:
@@ -45,8 +46,11 @@ class Game:
 		self.clock = pygame.time.Clock()
 
 		# Might not keep these.
+		#self.board1 = Board(self.screen, (50, 50))
+		#self.board2 = Board(self.screen, (1100, 50))
 		self.board1 = Board(self.screen, (50, 50))
-		self.board2 = Board(self.screen, (1100, 50))
+		self.board2 = Board(self.screen, ((WINDOWWIDTH/2+30) , 50))
+
 		self.boards = {
 			"board1": self.board1,
 			"board2": self.board2
@@ -338,15 +342,22 @@ class Game:
 
 def coordToBoard(coords):
 	# Converts to a square on a board. Maybe turn into function.
-	if (coords[0] >= game.boards["board1"].pos[0]) and (coords[0] <= game.boards["board1"].pos[0]+750) and (coords[1] >= game.boards["board1"].pos[1]) and (coords[1] <= game.boards["board1"].pos[1]+750):
+	# if (coords[0] >= game.boards["board1"].pos[0]) and (coords[0] <= game.boards["board1"].pos[0]+750) and (coords[1] >= game.boards["board1"].pos[1]) and (coords[1] <= game.boards["board1"].pos[1]+750):
+	# 	brd = "board1"
+	# elif (coords[0] >= game.boards["board2"].pos[0]) and (coords[0] <= game.boards["board2"].pos[0]+750) and (coords[1] >= game.boards["board2"].pos[1]) and (coords[1] <= game.boards["board2"].pos[1]+750):
+	# 	brd = "board2"
+	# else:
+	# 	return (0, 0), "none"
+
+	if (coords[0] >= game.boards["board1"].pos[0]) and (coords[0] <= game.boards["board1"].pos[0]+boardWidth) and (coords[1] >= game.boards["board1"].pos[1]) and (coords[1] <= game.boards["board1"].pos[1]+boardWidth):
 		brd = "board1"
-	elif (coords[0] >= game.boards["board2"].pos[0]) and (coords[0] <= game.boards["board2"].pos[0]+750) and (coords[1] >= game.boards["board2"].pos[1]) and (coords[1] <= game.boards["board2"].pos[1]+750):
+	elif (coords[0] >= game.boards["board2"].pos[0]) and (coords[0] <= game.boards["board2"].pos[0]+boardWidth) and (coords[1] >= game.boards["board2"].pos[1]) and (coords[1] <= game.boards["board2"].pos[1]+boardWidth):
 		brd = "board2"
 	else:
 		return (0, 0), "none"
 
 	row = int((coords[0] - game.boards[brd].pos[0]) / 75)
-	col = int((750 - coords[1] + game.boards[brd].pos[1]) / 75)
+	col = int((boardWidth - coords[1] + game.boards[brd].pos[1]) / 75)
 
 	return (row, col), brd
 
