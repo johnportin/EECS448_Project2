@@ -41,7 +41,7 @@ class Board:
 		self.drawShips = True
 		self.letters = ["A","B","C","D","E","F","G","H","I","J"]
 		self.numbers = ["1","2","3","4","5","6","7","8","9","10"]
-		
+
 		# Retrieve Assets
 		self.assetsList = {}
 		self.assetNameKeys = ["BS 1","BS 2","BS 3","BS 4","BS 5","BS 6", "BS_V 1","BS_V 2","BS_V 3","BS_V 4","BS_V 5","BS_V 6","hit","miss"]
@@ -55,7 +55,7 @@ class Board:
 
 		self.surface.fill((83,209,212))
 
-	#Used to draw the initial board           
+	#Used to draw the initial board
 	def drawBoard(self):
 		# Gridlines and labels
 		for x in range(0,11):
@@ -84,7 +84,6 @@ class Board:
 		if self.drawShips:
 			self.ships.draw(self.surface)
 		self.markers.draw(self.surface)
-
 		self.screen.blit(self.surface, self.pos)
 
 	#Creates a sprite at coordinate to represent hit or miss
@@ -94,7 +93,7 @@ class Board:
 			png = self.assetsList["hit"]
 		else:
 			png = self.assetsList["miss"]
-		
+
 		self.markers.add(Marker(png, coord))
 		self.drawBoard()
 
@@ -134,15 +133,15 @@ class Board:
 	def text_objects(self,text,font):
 		textSurface = font.render(text,True,(0,0,0))
 		return textSurface, textSurface.get_rect()
-		
+
 def getMouse():
 	"""
 	getMouse
 			* @pre: That the window has been clicked on
-			* @post: gets and returns proper X and Y values for corresponding 
+			* @post: gets and returns proper X and Y values for corresponding
 				//row and column
 			* @param: None
-			* @description: creates game loop and event listener the checks for 
+			* @description: creates game loop and event listener the checks for
 				//mousebuttondown then gets mouse x and y position and uses board
 				//dimentions to create proper number of rows and columns according
 				//to x and y set  and returns proper values for xVal and yVal

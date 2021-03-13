@@ -28,29 +28,27 @@ WINDOWWIDTH = 800
 WINDOWHEIGHT = 600
 
 
+
+
 class Game:
 	def __init__(self, width, height):
 		pygame.init()
 		self.width = width
 		self.height = height
 		#self.screen = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT)) #(850, 850)
-		self.screen = pygame.display.set_mode((1670, 850)) #(800, 600)
+		self.screen = pygame.display.set_mode((1870, 850)) #(800, 600)
 		self.screen.fill((128,128,128)) # Background color
 		self.clock = pygame.time.Clock()
-		self.currentMenu = None # Use this to switch between menus
-		self.gameState = {
-			"state": "start",
-			"turn": "n/a"
-		}
 		self.difficulty = 0
 
 		# Might not keep these.
 		self.board1 = Board(self.screen, (50, 50))
-		self.board2 = Board(self.screen, (900, 50))
+		self.board2 = Board(self.screen, (1100, 50))
 		self.boards = {
 			"board1": self.board1,
 			"board2": self.board2
 		}
+		self.maxShips = 6
 		self.bannedPositions = []
 		self.allowedLengths = list(range(1, MAX_SHIPS+1))
 
@@ -61,22 +59,98 @@ class Game:
 		# Options
 		self.mute = False
 
+		gameStates = {
+			'mainMenu'	: 	Menu(
+								title = 'Main Menu',
+								bgColor = BLUE,
+								btnTextArray = ['start', 'options', 'quit'],
+								fontSize = 20,
+								textColorArray = [WHITE] * 3,
+								plainColorArray = [DARKBLUE] * 3,
+								highlightedColorArray = [RED] * 3,
+								centeredPositionArray = [(400, 300), (400, 400), (400, 500)],
+								actionArray = [self.startAction, self.optionAction, quitGame]),
+
+			'optionsMenu' : Menu(
+								title = 'Options',
+								bgColor = BLUE,
+								btnTextArray = ['# ships', 'diff:' + difficultyDict[0], 'Return', 'Mute'],
+								fontSize = 20,
+								textColorArray = [WHITE] * 4,
+								plainColorArray = [DARKBLUE] * 4,
+								highlightedColorArray = [RED] * 4,
+								centeredPositionArray = [(400, 200), (400, 300), (400, 400), (400, 500)],
+								actionArray = [self.shipcountAction, self.difficultyAction, self.returnAction, self.muteAction]),
+			'start'	:	None,
+			'victory'	:	None,
+			'shipSelect'	:	None,
+			'turn'	:	None
+
+
+		}
+
+		self.gameStates = gameStates
+		self.stateName = 'mainMenu'
+		self.state = self.gameStates[self.stateName]
+
+
+	def changeState(self):
+		self.state = self.gameStates[self.stateName]
 
 	def gameLoop(self):
 		while True:
-			for event in pygame.event.get():
-				if self.currentMenu != None:
-					pass
-					#self.currentMenu.update(game.screen)
-				if event.type == pygame.QUIT:
-					pygame.quit()
-					sys.exit()
-				for button in self.currentMenu.buttons:
-					button.checkEvent(event)
+			if self.stateName == 'mainMenu' or self.stateName == 'optionsMenu':
+				for event in pygame.event.get():
+					if event.type == pygame.QUIT:
+						pygame.quit()
+						sys.exit()
+					for button in self.state.buttons:
+						button.checkEvent(event)
+						# self.state.update(self.screen)
+						# self.state.buttons.checkEvent(event)
 
-			self.currentMenu.draw(self.screen)
+			if self.stateName == 'start':
+				for event in pygame.event.get():
+					if event.type == pygame.QUIT:
+						pygame.quit()
+						sys.exit()
+				self.board1.drawBoard()
+				self.board2.drawBoard()
+				self.setup()
+
+			if self.stateName == 'guessing':
+				for event in pygame.event.get():
+					if event.type == pygame.QUIT:
+						pygame.quit()
+						sys.exit()
+
+
+			if self.state:
+				self.state.update(self.screen)
+				self.state.draw(self.screen)
+
+
 			pygame.display.flip()
 			self.clock.tick(60)
+
+
+			# game.board1.drawBoard()
+			# game.board2.drawBoard()
+			# pygame.display.flip()
+			# game.setup()
+			# for event in pygame.event.get():
+			# 	if self.currentMenu != None:
+			# 		pass
+			# 		#self.currentMenu.update(game.screen)
+			# 	if event.type == pygame.QUIT:
+			# 		pygame.quit()
+			# 		sys.exit()
+			# 	for button in self.currentMenu.buttons:
+			# 		button.checkEvent(event)
+			#
+			# self.currentMenu.draw(self.screen)
+			# pygame.display.flip()
+			# self.clock.tick(60)
 
 		# Dunno where to put this
 		if (gameState.state == "something"):
@@ -100,6 +174,7 @@ class Game:
 			ships = input("Input number of ships to place:")
 		return ships
 
+	# You can't quit the game in this middle of this function
 	def setup(self):
 		# Player 1 places ships
 		while len(self.allowedLengths) > 0:
@@ -108,11 +183,18 @@ class Game:
 		# Player 2 places ships
 		self.board1.hideShips()
 		self.bannedPositions = []
-		self.allowedLengths = list(range(1, MAX_SHIPS+1))
+		self.allowedLengths = list(range(1, self.maxShips+1))
 		while len(self.allowedLengths) > 0:
 			self.placeShip("board2")
 
-		self.guess("board1", "board2")
+		self.stateName = 'guessing'
+		self.changeState()
+
+
+		# self.guess("board1", "board2")
+
+	def setAllowedLengths(self):
+		self.allowedLengths = list(range(1, self.maxShips))
 
 	def placeShip(self, activeBoard): # might move this into board.py
 		# Mouse click on square = origin of ship
@@ -151,7 +233,7 @@ class Game:
 
 		# Some game logic stuff might go here
 
-	# I am quarantining this ugly code				
+	# I am quarantining this ugly code
 	def isValidShip(self, pos, brd, hover, hover_board, activeBoard):
 		# Add exception later to where you can only place on the correct board
 		if (brd == activeBoard) and (brd == hover_board): # Can't go off board
@@ -219,6 +301,42 @@ class Game:
 		# Change to victory menu
 		pass
 
+	def optionAction(self):
+		self.stateName = 'optionsMenu'
+		self.changeState()
+
+
+	def returnAction(self):
+		print('return called')
+		self.stateName = 'mainMenu'
+		self.changeState()
+
+	def difficultyAction(self):
+		self.difficulty += 1
+		self.difficulty %= 3
+		for button in self.state.buttons:
+			if not button.name.find('diff'): # Changes the difficulty text (why need NOT?)
+				button.text = difficultyDict[self.difficulty]
+				button.renderText()
+
+	def shipcountAction(self):
+		self.maxShips = max((self.maxShips + 1) % 7, 1)
+		for button in self.state.buttons:
+			if not button.name.find('#'):
+				button.text = str(self.maxShips)
+				button.renderText()
+		self.setAllowedLengths()
+		print(self.maxShips)
+		print(self.allowedLengths)
+
+	def startAction(self):
+		self.stateName = 'start'
+		self.changeState()
+
+	def muteAction(self):
+		self.mute = not self.mute
+		print("muted = " + str(self.mute))
+
 def coordToBoard(coords):
 	# Converts to a square on a board. Maybe turn into function.
 	if (coords[0] >= game.boards["board1"].pos[0]) and (coords[0] <= game.boards["board1"].pos[0]+750) and (coords[1] >= game.boards["board1"].pos[1]) and (coords[1] <= game.boards["board1"].pos[1]+750):
@@ -233,59 +351,23 @@ def coordToBoard(coords):
 
 	return (row, col), brd
 
-game = Game(WINDOWWIDTH, WINDOWHEIGHT)
 
-def optionAction():
-    game.currentMenu = optionsMenu
-
-def returnAction():
-	game.currentMenu = mainMenu
-
-def difficultyAction():
-	game.difficulty += 1
-	game.difficulty %= 3
-	for button in game.currentMenu.buttons:
-		if not button.name.find('diff'): # Changes the difficulty text (why need NOT?)
-			button.text = difficultyDict[game.difficulty]
-			button.renderText()
-	# print('difficulty = {}'.format(game.difficulty))
-
-def muteAction():
-	game.mute = not game.mute
-	print("muted = " + str(game.mute))
 
 
 difficultyDict = {0: 'easy', 1: 'hard', 2: 'impossible'}
 
-mainMenu = Menu(game = game,
-				title = 'Main Menu',
-				bgColor = BLUE,
-				btnTextArray = ['start', 'options', 'quit'],
-				fontSize = 20,
-				textColorArray = [WHITE] * 3,
-				plainColorArray = [DARKBLUE] * 3,
-				highlightedColorArray = [RED] * 3,
-				centeredPositionArray = [(400, 300), (400, 400), (400, 500)],
-				actionArray = [startAction, optionAction, quitGame])
-
-optionsMenu = Menu(game = game,
-				title = 'Options',
-				bgColor = BLUE,
-				btnTextArray = ['option1', 'diff:' + difficultyDict[game.difficulty], 'Return', 'Mute'],
-				fontSize = 20,
-				textColorArray = [WHITE] * 4,
-				plainColorArray = [DARKBLUE] * 4,
-				highlightedColorArray = [RED] * 4,
-				centeredPositionArray = [(400, 200), (400, 300), (400, 400), (400, 500)],
-				actionArray = [defaultAction, difficultyAction, returnAction, muteAction])
 
 
 
-game.currentMenu = mainMenu
 
-game.board1.drawBoard()
-game.board2.drawBoard()
-pygame.display.flip()
-game.setup()
+
+
+
+
+
+
+
+game = Game(WINDOWWIDTH, WINDOWHEIGHT)
+
 
 game.gameLoop()

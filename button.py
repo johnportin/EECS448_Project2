@@ -16,7 +16,7 @@ BTNWIDTH = 100
 
 class Button(Sprite):
     def __init__(self, text, fontSize, textColor, plainColor, highlightedColor,
-                  centeredPosition, action = None, game = None):
+                  centeredPosition, action = None):
         Sprite.__init__(self)
         self.name = text
         self.font = pygame.font.SysFont("Courier", fontSize, bold=True)
@@ -31,7 +31,6 @@ class Button(Sprite):
         self.clicked = False
         self.centeredPosition = centeredPosition
         self.clickedText = None # Maybe use to change the text upon clicking?
-        self.game = game
         self.rect = pygame.Rect((centeredPosition, (BTNWIDTH, BTNHEIGHT)))
         self.action = action # implement a callback feature
         self.renderText()
