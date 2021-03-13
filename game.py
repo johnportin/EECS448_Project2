@@ -24,10 +24,14 @@ BTNHEIGHT = 50
 BTNWIDTH = 100
 MAX_SHIPS = 3
 
-WINDOWWIDTH = 800
-WINDOWHEIGHT = 600
+#WINDOWWIDTH = 800
+#WINDOWHEIGHT = 600
 
-
+#Making the window fit the player's screen better
+info = pygame.display.Info()
+screen_width,screen_height = info.current_w,info.current_h
+WINDOWWIDTH = screen_width-100
+WINDOWHEIGHT = screen_height-100
 
 
 class Game:
@@ -35,8 +39,8 @@ class Game:
 		pygame.init()
 		self.width = width
 		self.height = height
-		#self.screen = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT)) #(850, 850)
-		self.screen = pygame.display.set_mode((1870, 850)) #(800, 600)
+		self.screen = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT)) #(850, 850)
+		#self.screen = pygame.display.set_mode((1870, 850)) #(800, 600)
 		self.screen.fill((128,128,128)) # Background color
 		self.clock = pygame.time.Clock()
 
