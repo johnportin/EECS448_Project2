@@ -8,8 +8,10 @@ from pygame import event
 pygame.init()
 
 info = pygame.display.Info()
-WINDOWWIDTH = info.current_w-100 # 1670
-WINDOWHEIGHT =  info.current_h-100 #850
+
+ASPECTRATIO = 16 / 9
+WINDOWHEIGHT = info.current_h-100 # 1670
+WINDOWWIDTH =  int(ASPECTRATIO * WINDOWHEIGHT) #850
 boardSize = (WINDOWWIDTH/2) - 100 # 750
 
 BG_COLOR = (83,209,212)

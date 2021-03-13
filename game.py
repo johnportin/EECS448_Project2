@@ -22,6 +22,7 @@ WHITE = (255, 255, 255)
 GREEN = (0, 200, 0)
 BTNHEIGHT = 50
 BTNWIDTH = 100
+ASPECTRATIO = 16 / 9
 
 
 class Game:
@@ -30,6 +31,7 @@ class Game:
 		self.width = width
 		self.height = height
 		self.screen = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
+		# print('window width = {}, window height = {}'.format(WINDOWWIDTH, WINDOWHEIGHT))
 		self.screen.fill((128,128,128)) # Background color
 		self.clock = pygame.time.Clock()
 
@@ -118,7 +120,6 @@ class Game:
 						sys.exit()
 					for button in self.state.buttons:
 						button.checkEvent(event)
-						print(self.state)
 						# self.state.buttons.checkEvent(event)
 				self.changeState()
 
