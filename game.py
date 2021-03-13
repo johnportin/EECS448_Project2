@@ -22,17 +22,10 @@ WHITE = (255, 255, 255)
 GREEN = (0, 200, 0)
 BTNHEIGHT = 50
 BTNWIDTH = 100
-BOARD_POS = {
-	"board1": (50, 50),
-	"board2": (900, 50)
-}
-MAX_SHIPS = 6
+MAX_SHIPS = 2
 
 WINDOWWIDTH = 800
 WINDOWHEIGHT = 600
-
-bannedPositions = []
-allowedLengths = list(range(0, MAX_SHIPS+1))
 
 
 class Game:
@@ -52,12 +45,14 @@ class Game:
 		self.difficulty = 0
 
 		# Might not keep these.
-		self.board1 = Board(self.screen, BOARD_POS["board1"])
-		self.board2 = Board(self.screen, BOARD_POS["board2"])
+		self.board1 = Board(self.screen, (50, 50))
+		self.board2 = Board(self.screen, (900, 50))
 		self.boards = {
 			"board1": self.board1,
 			"board2": self.board2
 		}
+		self.bannedPositions = []
+		self.allowedLengths = list(range(1, MAX_SHIPS+1))
 
 		# Set icon and app window title
 		pygame.display.set_caption("Battleship")
@@ -106,105 +101,135 @@ class Game:
 		return ships
 
 	def setup(self):
-		# Implement drag and drop to place ships
-		self.board1.addShips(3, (6,6), "vertical")
-		self.board1.showShips()
+		# Player 1 places ships
+		while len(self.allowedLengths) > 0:
+			self.placeShip("board1")
 
-	# Maybe add allowed squares and allowed lengths or something
-	def placeShips(self): # might move this into board.py
+		# Player 2 places ships
+		self.board1.hideShips()
+		self.bannedPositions = []
+		self.allowedLengths = list(range(1, MAX_SHIPS+1))
+		while len(self.allowedLengths) > 0:
+			self.placeShip("board2")
+
+		self.guess("board1", "board2")
+
+	def placeShip(self, activeBoard): # might move this into board.py
 		# Mouse click on square = origin of ship
 		brd = "none"
 		while (brd == "none"):
-			pos, brd = coords_to_pos(getMouse())
+			pos, brd = coordToBoard(getMouse())
 
 		# Hover - tries potential ships
 		running = True
 		while running:
-			self.boards[brd].drawBoard() # Clears the screen of any previous hovers
+			self.boards[activeBoard].drawBoard() # Clears the screen of any previous hovers
 
 			x = pygame.mouse.get_pos()[0]
 			y = pygame.mouse.get_pos()[1]
 
-			hover, hover_board = coords_to_pos((x,y))
-			length, position, orientation = self.isValidShip(pos, brd, hover, hover_board)
+			hover, hover_board = coordToBoard((x,y))
+			length, positions, orientation = self.isValidShip(pos, brd, hover, hover_board, activeBoard)
 
 			if length:
 				#print(length, position, orientation)
 				# Draw transparent ship, make it go away when position changes
-				self.boards[brd].addShips(length, position, orientation, True)
+				self.boards[activeBoard].addShips(length, positions, orientation, True)
 			pygame.display.flip()
 
 			# Click - click valid, add ship. Click invalid, do nothing
 			for event in pygame.event.get():
 				if event.type == pygame.MOUSEBUTTONDOWN:
 					if length:
-						self.boards[brd].addShips(length, position, orientation, False)
-						self.boards[brd].showShips()
-
-						allowedLengths.remove(length)
-						for i in range(0,length):
-							pos = (position[0]+i, position[1]) if orientation == "horizontal" else (position[0], position[1]+i)
-							bannedPositions.append(pos)
+						self.boards[activeBoard].addShips(length, positions, orientation, False)
+						self.boards[activeBoard].showShips()
+						self.allowedLengths.remove(length)
+						for pos in positions:
+							self.bannedPositions.append(pos)
 
 					running = False # Exits the loop
 
 		# Some game logic stuff might go here
 
 	# I am quarantining this ugly code				
-	def isValidShip(self, pos, brd, hover, hover_board):
+	def isValidShip(self, pos, brd, hover, hover_board, activeBoard):
 		# Add exception later to where you can only place on the correct board
-		if (brd == hover_board): # Can't go off board
+		if (brd == activeBoard) and (brd == hover_board): # Can't go off board
 			# Horizontal Placement
 			# Extra conditions here shouldn't be needed, but sometimes loop is buggy
 			if (pos[1] == hover[1]):
 				length = abs(pos[0] - hover[0]) + 1
 				# Only one ship of each length and can't exceed max length
-				if (length in allowedLengths):
+				if (length in self.allowedLengths):
 					# Can't overlap other ships
 					minX = pos[0] if pos[0] < hover[0] else hover[0]
+					positions = []
 					for x in range(0, length):
-						if (minX+x, pos[1]) in bannedPositions:
+						positions.append((minX+x, pos[1]))
+						if (minX+x, pos[1]) in self.bannedPositions:
 							return False, False, False
-					return length, (minX, pos[1]), "horizontal"
+					return length, positions, "horizontal"
 
 			# Vertical Placement
 			if (pos[0] == hover[0]):
 				length = abs(pos[1] - hover[1]) + 1
 
 				# Only one ship of each length and can't exceed max length
-				if (length in allowedLengths):
+				if (length in self.allowedLengths):
 					# Can't overlap other ships
 					maxY = pos[1] if pos[1] > hover[1] else hover[1]
+					positions = []
 					for y in range(0, length):
-						if (pos[0], maxY-y) in bannedPositions:
+						positions.append((pos[0], maxY-y))
+						if (pos[0], maxY-y) in self.bannedPositions:
 							return False, False, False
-					return length, (pos[0], maxY), "vertical"
+					return length, positions, "vertical"
 		return False, False, False
 
 
-	def guess(self):
+	def guess(self, ownBoard, targetBoard):
+		self.boards[ownBoard].showShips()
+		self.boards[targetBoard].hideShips()
+
 		# Guess
-		# Check valid
+		valid = False
+		while (not valid):
+			print("hi")
+			pos, brd = coordToBoard(getMouse())
+
+			# Click validation
+			tmp = True
+			for marker in self.boards[targetBoard].markers:
+				if (marker.pos == pos):
+					tmp = False
+			if (brd != targetBoard):
+				tmp = False
+			valid = tmp
+
 		# Is hit or miss?
-		# Update board
-		pass
+		marker = "miss"
+		for ship in self.boards[targetBoard].ships:
+			for shipPos in ship.pos:
+				if pos == shipPos:
+					marker = "hit"
+		self.boards[targetBoard].addShot(marker, pos)
 
 	def gameOver(self):
 		# Clear everything
 		# Change to victory menu
 		pass
 
-def coords_to_pos(coords):
+def coordToBoard(coords):
 	# Converts to a square on a board. Maybe turn into function.
-	if (coords[0] >= BOARD_POS["board1"][0]) and (coords[0] <= BOARD_POS["board1"][0]+750) and (coords[1] >= BOARD_POS["board1"][1]) and (coords[1] <= BOARD_POS["board1"][1]+750):
+	if (coords[0] >= game.boards["board1"].pos[0]) and (coords[0] <= game.boards["board1"].pos[0]+750) and (coords[1] >= game.boards["board1"].pos[1]) and (coords[1] <= game.boards["board1"].pos[1]+750):
 		brd = "board1"
-	elif (coords[0] >= BOARD_POS["board2"][0]) and (coords[0] <= BOARD_POS["board2"][0]+750) and (coords[1] >= BOARD_POS["board2"][1]) and (coords[1] <= BOARD_POS["board2"][1]+750):
+	elif (coords[0] >= game.boards["board2"].pos[0]) and (coords[0] <= game.boards["board2"].pos[0]+750) and (coords[1] >= game.boards["board2"].pos[1]) and (coords[1] <= game.boards["board2"].pos[1]+750):
 		brd = "board2"
 	else:
 		return (0, 0), "none"
 
-	row = int((coords[0] - BOARD_POS[brd][0]) / 75)
-	col = int((750 - coords[1] + BOARD_POS[brd][1]) / 75)
+	row = int((coords[0] - game.boards[brd].pos[0]) / 75)
+	col = int((750 - coords[1] + game.boards[brd].pos[1]) / 75)
 
 	return (row, col), brd
 
@@ -261,7 +286,6 @@ game.currentMenu = mainMenu
 game.board1.drawBoard()
 game.board2.drawBoard()
 pygame.display.flip()
-game.placeShips()
-#game.setup()
+game.setup()
 
 game.gameLoop()

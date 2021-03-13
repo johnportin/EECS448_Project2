@@ -7,16 +7,28 @@ from pygame import event
 
 pygame.init()
 
-class Piece(pygame.sprite.Sprite):
+#Quick helper function for getting board coordinates
+def coordToBoard(coord):
+	x = coord[0]*75 # 87.5 + coord[0]*75
+	y = 750 - (coord[1]+1)*75 # 770 - coord[1]*75
+	return((x,y))
+
+class Marker(pygame.sprite.Sprite):
 	def __init__(self,png,pos):
-		super(Piece,self).__init__()
+		super(Marker,self).__init__()
 		self.image = pygame.image.load(png)
 		self.rect = self.image.get_rect()
-		self.rect.topleft = pos
+		self.rect.topleft = coordToBoard(pos)
 		pygame.Surface.set_colorkey(self.image,[0,0,0])
 
-	def update(self,move):
-		self.rect.topleft = move
+class Ship(pygame.sprite.Sprite):
+	def __init__(self,png,pos):
+		super(Ship,self).__init__()
+		self.image = pygame.image.load(png)
+		self.rect = self.image.get_rect()
+		self.rect.topleft = coordToBoard(pos[0])
+		pygame.Surface.set_colorkey(self.image,[0,0,0])
+		self.pos = pos
 
 class Board:
 	def __init__(self, screen, pos):
@@ -82,15 +94,14 @@ class Board:
 			png = self.assetsList["hit"]
 		else:
 			png = self.assetsList["miss"]
-		pos = self.coordToBoard(coord)
 		
-		self.markers.add(Piece(png, pos))
+		self.markers.add(Marker(png, coord))
 		self.drawBoard()
 
-	def addShips(self, length, pos, orientation, hover):
+	def addShips(self, length, positions, orientation, hover):
 		asset = "BS_V " if orientation == "vertical" else "BS "
 		asset += str(length)
-		ship = Piece(self.assetsList[asset], self.coordToBoard(pos))
+		ship = Ship(self.assetsList[asset], positions)
 
 		if hover:
 			# Transparency
@@ -108,6 +119,7 @@ class Board:
 	def showShips(self):
 		self.drawShips = True
 		self.drawBoard()
+		pygame.display.flip()
 
 	# Hides ships
 	def hideShips(self):
@@ -116,17 +128,12 @@ class Board:
 		bg.fill((83,209,212))
 		self.ships.clear(self.surface, bg)
 		self.drawBoard()
+		pygame.display.flip()
 
 	#Used to place text on screen
 	def text_objects(self,text,font):
 		textSurface = font.render(text,True,(0,0,0))
 		return textSurface, textSurface.get_rect()
-
-	#Quick helper function for getting board coordinates
-	def coordToBoard(self,coord):
-		x = coord[0]*75 # 87.5 + coord[0]*75
-		y = self.surface.get_height() - (coord[1]+1)*75 # 770 - coord[1]*75
-		return((x,y))
 		
 def getMouse():
 	"""
