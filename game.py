@@ -197,6 +197,7 @@ class Game:
 			y = pygame.mouse.get_pos()[1]
 
 			hover, hover_board = coordToBoard((x,y))
+			#print(hover)
 			length, positions, orientation = self.isValidShip(pos, brd, hover, hover_board, activeBoard)
 
 			if length:
@@ -318,14 +319,6 @@ class Game:
 		print("muted = " + str(self.mute))
 
 def coordToBoard(coords):
-	# Converts to a square on a board. Maybe turn into function.
-	# if (coords[0] >= game.boards["board1"].pos[0]) and (coords[0] <= game.boards["board1"].pos[0]+750) and (coords[1] >= game.boards["board1"].pos[1]) and (coords[1] <= game.boards["board1"].pos[1]+750):
-	# 	brd = "board1"
-	# elif (coords[0] >= game.boards["board2"].pos[0]) and (coords[0] <= game.boards["board2"].pos[0]+750) and (coords[1] >= game.boards["board2"].pos[1]) and (coords[1] <= game.boards["board2"].pos[1]+750):
-	# 	brd = "board2"
-	# else:
-	# 	return (0, 0), "none"
-
 	if (coords[0] >= game.boards["board1"].pos[0]) and (coords[0] <= game.boards["board1"].pos[0]+boardSize) and (coords[1] >= game.boards["board1"].pos[1]) and (coords[1] <= game.boards["board1"].pos[1]+boardSize):
 		brd = "board1"
 	elif (coords[0] >= game.boards["board2"].pos[0]) and (coords[0] <= game.boards["board2"].pos[0]+boardSize) and (coords[1] >= game.boards["board2"].pos[1]) and (coords[1] <= game.boards["board2"].pos[1]+boardSize):
@@ -333,8 +326,8 @@ def coordToBoard(coords):
 	else:
 		return (0, 0), "none"
 
-	row = int((coords[0] - game.boards[brd].pos[0]) / 75)
-	col = int((boardSize - coords[1] + game.boards[brd].pos[1]) / 75)
+	row = int((coords[0] - game.boards[brd].pos[0]) / (boardSize/10))
+	col = int((boardSize - coords[1] + game.boards[brd].pos[1]) / (boardSize/10))
 
 	return (row, col), brd
 
