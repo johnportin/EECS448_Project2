@@ -115,6 +115,7 @@ class Game:
 						sys.exit()
 				self.board1.drawBoard()
 				self.board2.drawBoard()
+				pygame.display.flip()
 				self.setup()
 
 			if self.stateName == 'guessing':
@@ -186,6 +187,7 @@ class Game:
 		brd = "none"
 		while (brd == "none"):
 			pos, brd = coordToBoard(getMouse())
+		self.boards[activeBoard].addShot("hit", pos)
 
 		# Hover - tries potential ships
 		running = True

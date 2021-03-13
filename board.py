@@ -9,18 +9,14 @@ pygame.init()
 
 info = pygame.display.Info()
 screen_width,screen_height = info.current_w,info.current_h
-WINDOWWIDTH = screen_width-100
-WINDOWHEIGHT = screen_height-100
-boardSize = (WINDOWWIDTH/2) - 100
+WINDOWWIDTH = screen_width-100 # 1670
+WINDOWHEIGHT =  screen_height-100 #850
+boardSize = 750 # (WINDOWWIDTH/2) - 100 # 750
 
 #Quick helper function for getting board coordinates
 def coordToBoard(coord):
-	# print('coord = ' + str(coord))
-	# print(type(coord), 'x = ', type(coord[0]), 'y = ', type(coord[1]))
 	x = coord[0] * (boardSize/10)
 	y = boardSize - (coord[1] + 1) * (boardSize/10)
-	# x = coord[0]*75 # 87.5 + coord[0]*75
-	# y = boardSize - (int(coord[1])+1)*75 # 770 - coord[1]*75
 	return((x,y))
 
 class Marker(pygame.sprite.Sprite):
@@ -83,9 +79,7 @@ class Board:
 		for letter in self.letters:
 			textSurf, textRect = self.text_objects(letter, textType)
 			x = ord(letter) - 65
-			#xpos = x*boardSize/10 + self.pos[0] + 37.5
 			xpos = x*boardSize/10 + self.pos[0] + (boardSize*.05)
-			#textRect.center = (xpos, 825) # Make this flexible
 			textRect.center = (xpos, 25) # Make this flexible
 			self.screen.blit(textSurf,textRect)
 
@@ -93,9 +87,8 @@ class Board:
 		for number in self.numbers:
 			textSurf, textRect = self.text_objects(number, textType)
 			x = int(number) - 1
-			#ypos = 760 - x*boardSize/10 # Make this flexible
-			ypos = boardSize + (boardSize*.05) - x*boardSize/10 # Make this flexible
-			textRect.center = (self.pos[0]-25, ypos) # Make this flexible
+			ypos = boardSize + (boardSize*.05) - x*boardSize/10 - boardSize/40
+			textRect.center = (self.pos[0]-25, ypos)
 			self.screen.blit(textSurf,textRect)
 
 		if self.drawShips:
@@ -105,12 +98,12 @@ class Board:
 
 	#Creates a sprite at coordinate to represent hit or miss
 	def addShot(self, mark, coord):
-		print(str(mark) + " at " + str(coord))
 		if (mark == "hit"):
 			png = self.assetsList["hit"]
 		else:
 			png = self.assetsList["miss"]
 
+		print(str(mark) + " at " + str(coord))
 		self.markers.add(Marker(png, coord))
 		self.drawBoard()
 
