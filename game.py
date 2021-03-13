@@ -39,7 +39,6 @@ class Game:
 		self.screen = pygame.display.set_mode((1870, 850)) #(800, 600)
 		self.screen.fill((128,128,128)) # Background color
 		self.clock = pygame.time.Clock()
-		self.difficulty = 0
 
 		# Might not keep these.
 		self.board1 = Board(self.screen, (50, 50))
@@ -48,6 +47,7 @@ class Game:
 			"board1": self.board1,
 			"board2": self.board2
 		}
+		self.currentPlayer = 'board1'
 		self.maxShips = 6
 		self.bannedPositions = []
 		self.allowedLengths = list(range(1, MAX_SHIPS+1))
@@ -58,6 +58,7 @@ class Game:
 
 		# Options
 		self.mute = False
+		self.difficulty = 0
 
 		gameStates = {
 			'mainMenu'	: 	Menu(
@@ -82,6 +83,7 @@ class Game:
 								centeredPositionArray = [(400, 200), (400, 300), (400, 400), (400, 500)],
 								actionArray = [self.shipcountAction, self.difficultyAction, self.returnAction, self.muteAction]),
 			'start'	:	None,
+			'guessing'	:	None,
 			'victory'	:	None,
 			'shipSelect'	:	None,
 			'turn'	:	None
@@ -92,6 +94,7 @@ class Game:
 		self.gameStates = gameStates
 		self.stateName = 'mainMenu'
 		self.state = self.gameStates[self.stateName]
+		self.done = False
 
 
 	def changeState(self):
@@ -123,6 +126,8 @@ class Game:
 					if event.type == pygame.QUIT:
 						pygame.quit()
 						sys.exit()
+					if event.type == pygame.MOUSEBUTTONDOWN:
+						self.guess(event, 'board1', 'board2')
 
 
 			if self.state:
@@ -133,29 +138,6 @@ class Game:
 			pygame.display.flip()
 			self.clock.tick(60)
 
-
-			# game.board1.drawBoard()
-			# game.board2.drawBoard()
-			# pygame.display.flip()
-			# game.setup()
-			# for event in pygame.event.get():
-			# 	if self.currentMenu != None:
-			# 		pass
-			# 		#self.currentMenu.update(game.screen)
-			# 	if event.type == pygame.QUIT:
-			# 		pygame.quit()
-			# 		sys.exit()
-			# 	for button in self.currentMenu.buttons:
-			# 		button.checkEvent(event)
-			#
-			# self.currentMenu.draw(self.screen)
-			# pygame.display.flip()
-			# self.clock.tick(60)
-
-		# Dunno where to put this
-		if (gameState.state == "something"):
-			# Execute a function
-			pass
 
 
 	# This functions get triggered by gameLoop depending on gameState
@@ -269,32 +251,45 @@ class Game:
 		return False, False, False
 
 
-	def guess(self, ownBoard, targetBoard):
+	def guess(self, event, ownBoard, targetBoard):
 		self.boards[ownBoard].showShips()
 		self.boards[targetBoard].hideShips()
 
-		# Guess
-		valid = False
-		while (not valid):
-			print("hi")
-			pos, brd = coordToBoard(getMouse())
+		mouseCoords = event.pos
+		print(mouseCoords)
+		pos = coordToBoard(mouseCoords)
 
-			# Click validation
-			tmp = True
-			for marker in self.boards[targetBoard].markers:
-				if (marker.pos == pos):
-					tmp = False
-			if (brd != targetBoard):
-				tmp = False
-			valid = tmp
+		valid = self.boards[targetBoard].rect.collidepoint(mouseCoords)
+		for marker in self.boards[targetBoard].markers:
+			if marker.rect.collidepoint(mouseCoords):
+				valid = False
+
+
+		# # Guess
+		# valid = False
+		# while (not valid):
+		# 	print("hi")
+		# 	pos, brd = coordToBoard(getMouse())
+		#
+		# 	# Click validation
+		# 	tmp = True
+		# 	for marker in self.boards[targetBoard].markers:
+		# 		if (marker.pos == pos):
+		# 			tmp = False
+		# 	if (brd != targetBoard):
+		# 		tmp = False
+		# 	valid = tmp
 
 		# Is hit or miss?
-		marker = "miss"
-		for ship in self.boards[targetBoard].ships:
-			for shipPos in ship.pos:
-				if pos == shipPos:
-					marker = "hit"
-		self.boards[targetBoard].addShot(marker, pos)
+		if valid:
+			marker = "miss"
+			for ship in self.boards[targetBoard].ships:
+				for shipPos in ship.pos:
+					print('{} ==?== {}'.format(pos, shipPos))
+					if pos[0] == shipPos:
+						print('hit at {}'.format(shipPos))
+						marker = "hit"
+			self.boards[targetBoard].addShot(marker, pos)
 
 	def gameOver(self):
 		# Clear everything

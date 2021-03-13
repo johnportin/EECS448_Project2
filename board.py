@@ -9,8 +9,12 @@ pygame.init()
 
 #Quick helper function for getting board coordinates
 def coordToBoard(coord):
-	x = coord[0]*75 # 87.5 + coord[0]*75
-	y = 750 - (coord[1]+1)*75 # 770 - coord[1]*75
+	print('coord = ' + str(coord))
+	print(type(coord), 'x = ', type(coord[0]), 'y = ', type(coord[1]))
+	x = coord[0] * 75
+	y = 750 - (coord[1] + 1) * 75
+	# x = coord[0]*75 # 87.5 + coord[0]*75
+	# y = 750 - (int(coord[1])+1)*75 # 770 - coord[1]*75
 	return((x,y))
 
 class Marker(pygame.sprite.Sprite):
@@ -18,7 +22,7 @@ class Marker(pygame.sprite.Sprite):
 		super(Marker,self).__init__()
 		self.image = pygame.image.load(png)
 		self.rect = self.image.get_rect()
-		self.rect.topleft = coordToBoard(pos)
+		self.rect.topleft = coordToBoard(pos[0])
 		pygame.Surface.set_colorkey(self.image,[0,0,0])
 
 class Ship(pygame.sprite.Sprite):
@@ -34,6 +38,7 @@ class Board:
 	def __init__(self, screen, pos):
 		self.screen = screen
 		self.surface = pygame.Surface((750, 750))
+		self.rect = self.surface.get_rect()
 		self.markers = pygame.sprite.Group() # Array of hit/miss markers
 		self.ships = pygame.sprite.Group() # Array of ship sprites
 		self.pos = pos
