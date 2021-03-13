@@ -123,6 +123,7 @@ class Board:
 		print(str(mark) + " at " + str(coord))
 		self.markers.add(Marker(png, coord, type))
 		self.drawBoard()
+		pygame.display.flip()
 
 	def addShips(self, length, positions, orientation, hover):
 		asset = "BS_V " if orientation == "vertical" else "BS "
