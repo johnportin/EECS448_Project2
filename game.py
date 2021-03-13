@@ -59,18 +59,18 @@ class Game:
 			'mainMenu'	: 	Menu(
 								title = 'Main Menu',
 								bgColor = BLUE,
-								btnTextArray = ['start', 'options', 'quit'],
+								btnTextArray = ['Start', 'Game Settings', 'Quit'],
 								fontSize = 20,
 								textColorArray = [WHITE] * 3,
 								plainColorArray = [DARKBLUE] * 3,
 								highlightedColorArray = [RED] * 3,
-								centeredPositionArray = [(400, 300), (400, 400), (400, 500)],
+								centeredPositionArray = [(WINDOWWIDTH/3, WINDOWHEIGHT/2), ((WINDOWWIDTH/2), WINDOWHEIGHT/2), ((2*WINDOWWIDTH/3), WINDOWHEIGHT/2)],
 								actionArray = [self.startAction, self.optionAction, quitGame]),
 
 			'optionsMenu' : Menu(
 								title = 'Options',
 								bgColor = BLUE,
-								btnTextArray = ['# ships', 'diff:' + difficultyDict[0], 'Return', 'Mute'],
+								btnTextArray = ['# of Ships', 'Difficulty:' + difficultyDict[0], 'Return', 'Mute'],
 								fontSize = 20,
 								textColorArray = [WHITE] * 4,
 								plainColorArray = [DARKBLUE] * 4,
