@@ -65,8 +65,8 @@ class Board:
 
 	def clearBoard(self):
 		self.surface.fill((83,209,212))
-		self.markers = pygame.sprite.Group()
-		self.ships = pygame.sprite.Group()
+		self.markers.empty()
+		self.ships.empty()
 
 	#Used to draw the initial board
 	def drawBoard(self):
