@@ -86,7 +86,7 @@ class Game:
 								plainColorArray = [DARKBLUE] * 3,
 								highlightedColorArray = [RED] * 3,
 								centeredPositionArray = [(400, 300), (400, 400), (400, 500)],
-								actionArray = [defaultAction, self.returnAction, quitGame]),
+								actionArray = [self.playagainAction, self.returnAction, quitGame]),
 			'start'	:	None,
 			'guessing'	:	None,
 			'victory'	:	None,
@@ -310,6 +310,11 @@ class Game:
 	def optionAction(self):
 		self.stateName = 'optionsMenu'
 
+	def playagainAction(self):
+		self.bannedPositions = []
+		self.allowedLengths = list(range(1, self.maxShips+1))
+		self.stateName = 'start'
+
 
 	def returnAction(self):
 		print('return called')
@@ -334,6 +339,12 @@ class Game:
 		print(self.allowedLengths)
 
 	def startAction(self):
+		# You could do this in the main event loop after the game ends
+		# If you do not do this, player 1 cannot place ships after finish a
+		# game, returning to the menu, and starting again
+		self.bannedPositions = []
+		self.allowedLengths = list(range(1, self.maxShips+1))
+
 		self.stateName = 'start'
 
 	def muteAction(self):
