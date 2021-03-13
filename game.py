@@ -64,13 +64,13 @@ class Game:
 								textColorArray = [WHITE] * 3,
 								plainColorArray = [DARKBLUE] * 3,
 								highlightedColorArray = [RED] * 3,
-								centeredPositionArray = [(WINDOWWIDTH/3, WINDOWHEIGHT/2), ((WINDOWWIDTH/2), WINDOWHEIGHT/2), ((2*WINDOWWIDTH/3), WINDOWHEIGHT/2)],
+								centeredPositionArray = [(WINDOWWIDTH/2-125, WINDOWHEIGHT/3), (WINDOWWIDTH/2-125, WINDOWHEIGHT/2), (WINDOWWIDTH/2-125, 2*WINDOWHEIGHT/3)],
 								actionArray = [self.startAction, self.optionAction, quitGame]),
 
 			'optionsMenu' : Menu(
 								title = 'Options',
 								bgColor = BLUE,
-								btnTextArray = ['# of Ships', 'Difficulty:' + difficultyDict[0], 'Return', 'Mute'],
+								btnTextArray = ['# of Ships', 'Difficulty: ' + difficultyDict[0], 'Return', 'Mute'],
 								fontSize = 20,
 								textColorArray = [WHITE] * 4,
 								plainColorArray = [DARKBLUE] * 4,
@@ -356,7 +356,7 @@ def coordToBoard(coords):
 
 
 
-difficultyDict = {0: 'easy', 1: 'hard', 2: 'impossible'}
+difficultyDict = {0: 'Easy', 1: 'Medium', 2: 'Hard'}
 
 
 

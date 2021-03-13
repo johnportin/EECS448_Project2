@@ -12,7 +12,7 @@ RED = (255, 50, 50)
 WHITE = (255, 255, 255)
 GREEN = (0, 200, 0)
 BTNHEIGHT = 50
-BTNWIDTH = 100
+BTNWIDTH = 250
 
 class Button(Sprite):
     def __init__(self, text, fontSize, textColor, plainColor, highlightedColor,
