@@ -53,7 +53,7 @@ class Game:
 		}
 		self.currentPlayer = 'board1'
 		self.otherPlayer = 'board2'
-		self.maxShips = MA
+		self.maxShips = 3
 		self.bannedPositions = []
 		self.allowedLengths = list(range(1, MAX_SHIPS+1))
 
@@ -270,7 +270,7 @@ class Game:
 
 		mouseCoords = event.pos
 		pos = coordToBoard(mouseCoords)
-		print('target board rect = {}'.format(self.boards[targetBoard].testRect))
+		print('target board rect = {}'.format(self.boards[targetBoard].rect))
 
 		valid = self.boards[targetBoard].rect.collidepoint(mouseCoords)
 		for marker in self.boards[targetBoard].markers:
