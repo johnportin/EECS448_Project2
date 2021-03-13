@@ -20,12 +20,13 @@ def coordToBoard(coord):
 	return((x,y))
 
 class Marker(pygame.sprite.Sprite):
-	def __init__(self,png,pos):
+	def __init__(self,png,pos, type = 0):
 		super(Marker,self).__init__()
 		self.image = pygame.image.load(png)
 		self.rect = self.image.get_rect()
 		self.rect.topleft = coordToBoard(pos[0])
 		pygame.Surface.set_colorkey(self.image,[0,0,0])
+		self.type = type
 
 class Ship(pygame.sprite.Sprite):
 	def __init__(self,png,pos):
@@ -98,13 +99,15 @@ class Board:
 
 	#Creates a sprite at coordinate to represent hit or miss
 	def addShot(self, mark, coord):
+		type = 0
 		if (mark == "hit"):
+			type = 1
 			png = self.assetsList["hit"]
 		else:
 			png = self.assetsList["miss"]
 
 		print(str(mark) + " at " + str(coord))
-		self.markers.add(Marker(png, coord))
+		self.markers.add(Marker(png, coord, type))
 		self.drawBoard()
 
 	def addShips(self, length, positions, orientation, hover):

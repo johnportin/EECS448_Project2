@@ -43,7 +43,7 @@ class Game:
 		}
 		self.currentPlayer = 'board1'
 		self.otherPlayer = 'board2'
-		self.maxShips = 6
+		self.maxShips = 2
 		self.bannedPositions = []
 		self.allowedLengths = list(range(1, self.maxShips+1))
 
@@ -77,6 +77,16 @@ class Game:
 								highlightedColorArray = [RED] * 4,
 								centeredPositionArray = [(400, 200), (400, 300), (400, 400), (400, 500)],
 								actionArray = [self.shipcountAction, self.difficultyAction, self.returnAction, self.muteAction]),
+			'gameOverMenu' : Menu(
+								title = 'Game Over',
+								bgColor = BLUE,
+								btnTextArray = ['Play Again', 'Return to Main', 'Quit'],
+								fontSize = 20,
+								textColorArray = [WHITE] * 3,
+								plainColorArray = [DARKBLUE] * 3,
+								highlightedColorArray = [RED] * 3,
+								centeredPositionArray = [(400, 300), (400, 400), (400, 500)],
+								actionArray = [defaultAction, self.returnAction, quitGame]),
 			'start'	:	None,
 			'guessing'	:	None,
 			'victory'	:	None,
@@ -97,7 +107,7 @@ class Game:
 
 	def gameLoop(self):
 		while True:
-			if self.stateName == 'mainMenu' or self.stateName == 'optionsMenu':
+			if self.stateName == 'mainMenu' or self.stateName == 'optionsMenu' or self.stateName == 'gameOverMenu':
 				for event in pygame.event.get():
 					if event.type == pygame.QUIT:
 						pygame.quit()
@@ -131,6 +141,15 @@ class Game:
 							else:
 								self.currentPlayer = 'board1'
 								self.otherPlayer = 'board2'
+
+				# if game is over, go to menu
+				count = 0
+				for marker in self.boards[self.currentPlayer].markers:
+					if marker.type == 1:
+						count += 1
+				if count == self.maxShips * (self.maxShips + 1) // 2:
+					self.stateName = 'gameOverMenu'
+				self.changeState()
 
 
 
