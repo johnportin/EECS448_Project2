@@ -149,6 +149,9 @@ class Game:
 						count += 1
 				if count == self.maxShips * (self.maxShips + 1) // 2:
 					self.stateName = 'gameOverMenu'
+					#clear boards from previous iterations of the game
+					for board in self.boards.values():
+						board.clearBoard()
 				self.changeState()
 
 

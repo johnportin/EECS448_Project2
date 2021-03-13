@@ -63,6 +63,11 @@ class Board:
 
 		self.surface.fill((83,209,212)) #what is this ah oops -katelyn
 
+	def clearBoard(self):
+		self.surface.fill((83,209,212))
+		self.markers = pygame.sprite.Group()
+		self.ships = pygame.sprite.Group()
+
 	#Used to draw the initial board
 	def drawBoard(self):
 		# Gridlines and labels
