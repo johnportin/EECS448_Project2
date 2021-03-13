@@ -311,8 +311,8 @@ class Game:
 		# Change to victory menu
 		pass
 
-	def optionAction(self):
-		self.stateName = 'optionsMenu'
+	# def optionAction(self):
+	# 	self.stateName = 'optionsMenu'
 
 	def playagainAction(self):
 		self.bannedPositions = []
@@ -336,7 +336,7 @@ class Game:
 		self.playerORai += 1
 		self.playerORai %= 2
 		for button in self.state.buttons:
-			if not button.name.find('Play Against: '): # Changes the button text
+			if not button.name.find('Play Against: '): # Changes the text
 				button.text = playerAI[self.playerORai]
 				button.renderText()
 
@@ -384,16 +384,5 @@ playerAI = {0: 'Player', 1: 'AI'}
 
 
 
-
-
-
-
-
-
-
-
-
 game = Game(WINDOWWIDTH, WINDOWHEIGHT)
-
-
 game.gameLoop()
