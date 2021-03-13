@@ -63,10 +63,10 @@ class Game:
 								#btnTextArray = ['Start', 'Game Settings', 'Quit'],
 								btnTextArray = ['Start', 'Play Against: ' + playerAI[0], 'Difficulty: ' + difficultyDict[0], '# of Ships', 'Quit'],
 								fontSize = 20,
-								textColorArray = [WHITE] * 3,
-								plainColorArray = [DARKBLUE] * 3,
-								highlightedColorArray = [RED] * 3,
-								centeredPositionArray = [(WINDOWWIDTH/2-125, WINDOWHEIGHT/2 - 200), (WINDOWWIDTH/2-125, WINDOWHEIGHT/2 - 100),(WINDOWWIDTH/2-125, WINDOWHEIGHT/2), (WINDOWWIDTH/2-125, WINDOWHEIGHT/2 + 100 ), (WINDOWWIDTH/2-125, (WINDOWHEIGHT/2) + 200)],
+								textColorArray = [WHITE] * 5,
+								plainColorArray = [DARKBLUE] * 5,
+								highlightedColorArray = [RED] * 5,
+								centeredPositionArray = [(WINDOWWIDTH/2-150, WINDOWHEIGHT/2 - 200), (WINDOWWIDTH/2-150, WINDOWHEIGHT/2 - 100),(WINDOWWIDTH/2-150, WINDOWHEIGHT/2), (WINDOWWIDTH/2-150, WINDOWHEIGHT/2 + 100 ), (WINDOWWIDTH/2-150, (WINDOWHEIGHT/2) + 200)],
 								#actionArray = [self.startAction, self.optionAction, quitGame]),
 								actionArray = [self.startAction, self.playerAIAction, self.difficultyAction, self.shipcountAction, quitGame]),
 
@@ -89,13 +89,8 @@ class Game:
 								textColorArray = [WHITE] * 3,
 								plainColorArray = [DARKBLUE] * 3,
 								highlightedColorArray = [RED] * 3,
-								centeredPositionArray = [(400, 300), (400, 400), (400, 500)],
-<<<<<<< HEAD
-								actionArray = [defaultAction, self.returnAction, quitGame]),
-
-=======
+								centeredPositionArray = [(WINDOWWIDTH/2-150, WINDOWHEIGHT/2 - 200), (WINDOWWIDTH/2-150, WINDOWHEIGHT/2 - 100), (WINDOWWIDTH/2-150, WINDOWHEIGHT/2)],
 								actionArray = [self.playagainAction, self.returnAction, quitGame]),
->>>>>>> b7de60a8cd73350165cf3cc8ab72beb4e2718b24
 			'start'	:	None,
 			'guessing'	:	None,
 			'victory'	:	None,
