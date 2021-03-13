@@ -127,6 +127,7 @@ class Game:
 					if event.type == pygame.QUIT:
 						pygame.quit()
 						sys.exit()
+				self.screen.fill(BLUE)
 				self.board1.drawBoard()
 				self.board2.drawBoard()
 				pygame.display.flip()
