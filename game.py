@@ -6,7 +6,7 @@ from pygame.sprite import Sprite
 from board import *
 
 from button import *
-from aux import *
+from auxx import *
 
 
 from menu import Menu
@@ -54,29 +54,33 @@ class Game:
 		# Options
 		self.mute = False
 		self.difficulty = 0
+		self.playerORai = 0
 
 		gameStates = {
 			'mainMenu'	: 	Menu(
 								title = 'Main Menu',
 								bgColor = BLUE,
-								btnTextArray = ['Start', 'Game Settings', 'Quit'],
+								#btnTextArray = ['Start', 'Game Settings', 'Quit'],
+								btnTextArray = ['Start', 'Play Against: ' + playerAI[0], 'Difficulty: ' + difficultyDict[0], '# of Ships', 'Quit'],
 								fontSize = 20,
 								textColorArray = [WHITE] * 3,
 								plainColorArray = [DARKBLUE] * 3,
 								highlightedColorArray = [RED] * 3,
-								centeredPositionArray = [(WINDOWWIDTH/2-125, WINDOWHEIGHT/3), (WINDOWWIDTH/2-125, WINDOWHEIGHT/2), (WINDOWWIDTH/2-125, 2*WINDOWHEIGHT/3)],
-								actionArray = [self.startAction, self.optionAction, quitGame]),
+								centeredPositionArray = [(WINDOWWIDTH/2-125, WINDOWHEIGHT/2 - 200), (WINDOWWIDTH/2-125, WINDOWHEIGHT/2 - 100),(WINDOWWIDTH/2-125, WINDOWHEIGHT/2), (WINDOWWIDTH/2-125, WINDOWHEIGHT/2 + 100 ), (WINDOWWIDTH/2-125, (WINDOWHEIGHT/2) + 200)],
+								#actionArray = [self.startAction, self.optionAction, quitGame]),
+								actionArray = [self.startAction, self.playerAIAction, self.difficultyAction, self.shipcountAction, quitGame]),
 
-			'optionsMenu' : Menu(
-								title = 'Options',
-								bgColor = BLUE,
-								btnTextArray = ['# of Ships', 'Difficulty: ' + difficultyDict[0], 'Return', 'Mute'],
-								fontSize = 20,
-								textColorArray = [WHITE] * 4,
-								plainColorArray = [DARKBLUE] * 4,
-								highlightedColorArray = [RED] * 4,
-								centeredPositionArray = [(400, 200), (400, 300), (400, 400), (400, 500)],
-								actionArray = [self.shipcountAction, self.difficultyAction, self.returnAction, self.muteAction]),
+			# 'optionsMenu' : Menu(
+			# 					title = 'Options',
+			# 					bgColor = BLUE,
+			# 					btnTextArray = ['# of Ships', 'Difficulty: ' + difficultyDict[0], 'Return', 'Mute'],
+			# 					fontSize = 20,
+			# 					textColorArray = [WHITE] * 4,
+			# 					plainColorArray = [DARKBLUE] * 4,
+			# 					highlightedColorArray = [RED] * 4,
+			# 					centeredPositionArray = [(400, 200), (400, 300), (400, 400), (400, 500)],
+			# 					actionArray = [self.shipcountAction, self.difficultyAction, self.returnAction, self.muteAction]),
+
 			'gameOverMenu' : Menu(
 								title = 'Game Over',
 								bgColor = BLUE,
@@ -87,6 +91,7 @@ class Game:
 								highlightedColorArray = [RED] * 3,
 								centeredPositionArray = [(400, 300), (400, 400), (400, 500)],
 								actionArray = [defaultAction, self.returnAction, quitGame]),
+
 			'start'	:	None,
 			'guessing'	:	None,
 			'victory'	:	None,
@@ -107,7 +112,7 @@ class Game:
 
 	def gameLoop(self):
 		while True:
-			if self.stateName == 'mainMenu' or self.stateName == 'optionsMenu' or self.stateName == 'gameOverMenu':
+			if self.stateName == 'mainMenu' or self.stateName == 'gameOverMenu': #or self.stateName == 'optionsMenu'
 				for event in pygame.event.get():
 					if event.type == pygame.QUIT:
 						pygame.quit()
@@ -319,8 +324,16 @@ class Game:
 		self.difficulty += 1
 		self.difficulty %= 3
 		for button in self.state.buttons:
-			if not button.name.find('diff'): # Changes the difficulty text (why need NOT?)
+			if not button.name.find('Difficulty: '): # Changes the difficulty text (why need NOT?)
 				button.text = difficultyDict[self.difficulty]
+				button.renderText()
+
+	def playerAIAction(self):
+		self.playerORai += 1
+		self.playerORai %= 2
+		for button in self.state.buttons:
+			if not button.name.find('Play Against: '): # Changes the button text
+				button.text = playerAI[self.playerORai]
 				button.renderText()
 
 	def shipcountAction(self):
@@ -357,6 +370,7 @@ def coordToBoard(coords):
 
 
 difficultyDict = {0: 'Easy', 1: 'Medium', 2: 'Hard'}
+playerAI = {0: 'Player', 1: 'AI'}
 
 
 

@@ -5,7 +5,7 @@ from pygame.sprite import RenderUpdates
 from pygame.sprite import Sprite
 
 from button import *
-from aux import *
+from auxx import *
 
 pygame.freetype.init()
 
