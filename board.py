@@ -17,7 +17,7 @@ boardWidth = (WINDOWWIDTH/2) - 100
 def coordToBoard(coord):
 	print('coord = ' + str(coord))
 	print(type(coord), 'x = ', type(coord[0]), 'y = ', type(coord[1]))
-	x = coord[0] * 75 #what are these controlling?###########################################
+	x = coord[0] * 75 #what are these controlling? -katelyn
 	y = boardWidth - (coord[1] + 1) * 75 # ^^
 
 	# x = coord[0]*75 # 87.5 + coord[0]*75
@@ -65,7 +65,7 @@ class Board:
 				if(asset.find(key) != -1):
 					self.assetsList[key] = asset
 
-		self.surface.fill((83,209,212)) #what is this ah######################################
+		self.surface.fill((83,209,212)) #what is this ah oops -katelyn
 
 	#Used to draw the initial board
 	def drawBoard(self):
