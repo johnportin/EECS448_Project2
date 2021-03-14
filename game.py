@@ -4,6 +4,7 @@ import pygame.freetype
 from pygame.sprite import RenderUpdates
 from pygame.sprite import Sprite
 from board import *
+import random
 
 from button import *
 from auxx import *
@@ -38,9 +39,10 @@ class Game:
 		}
 		self.currentPlayer = 'board1'
 		self.otherPlayer = 'board2'
-		self.maxShips = 2
+		self.maxShips = 6
 		self.bannedPositions = []
 		self.allowedLengths = list(range(1, self.maxShips+1))
+		self.aiLastGuess = "none"
 
 		# Set icon and app window title
 		pygame.display.set_caption("Battleship")
@@ -128,6 +130,11 @@ class Game:
 				self.setup()
 
 			if self.stateName == 'guessing':
+				if self.playerORai == 1 and self.currentPlayer == 'board2':
+					self.ai()
+					self.currentPlayer = 'board1'
+					self.otherPlayer = 'board2'
+
 				for event in pygame.event.get():
 					if event.type == pygame.QUIT:
 						pygame.quit()
@@ -146,10 +153,12 @@ class Game:
 								self.currentPlayer = 'board1'
 								self.otherPlayer = 'board2'
 
+								# self.playerORai == 1
+
 				# if game is over, go to menu
 				count = 0
 				for marker in self.boards[self.currentPlayer].markers:
-					if marker.type == 1:
+					if marker.mark == "hit":
 						count += 1
 				if count == self.maxShips * (self.maxShips + 1) // 2:
 					self.stateName = 'gameOverMenu'
@@ -290,10 +299,7 @@ class Game:
 		pos = coordToBoard(mouseCoords)
 		print('target board rect = {}'.format(self.boards[targetBoard].rect))
 
-		valid = self.boards[targetBoard].rect.collidepoint(mouseCoords)
-		for marker in self.boards[targetBoard].markers:
-			if marker.rect.collidepoint(mouseCoords):
-				valid = False
+		valid = self.isValidGuess(targetBoard, mouseCoords)
 
 		# Is hit or miss?
 		if valid:
@@ -306,13 +312,75 @@ class Game:
 		print('valid = ' + str(valid))
 		return valid
 
+	def isValidGuess(self, targetBoard, mouseCoords):
+		valid = self.boards[targetBoard].rect.collidepoint(mouseCoords)
+		for marker in self.boards[targetBoard].markers:
+			if marker.rect.collidepoint(mouseCoords):
+				valid = False
+		return valid
+
+	def ai(self):
+		# AI is always board2 and Player is always board1
+
+		valid = False
+		guess = (-1,-1)
+		while not valid:
+			print("Finding a valid guess")
+			if self.difficulty == 0:
+				guess = (random.randint(0,9), random.randint(0,9))
+			if self.difficulty == 1: # I'm sorry to whomever has to read this (It was my nomenclature)
+				if self.aiLastGuess == "none":
+					guess = (random.randint(0,9), random.randint(0,9))
+				else:
+					possibleGuesses = []
+
+					for i in [0, 1]:
+						for j in [-1, 1]:
+							myGuess = list(self.aiLastGuess)
+							print('myGuess = ', myGuess)
+							myGuess[i] = myGuess[i] + j
+							g = tuple(myGuess)
+							if self.isValidGuess(
+								"board1", ((g[0]*boardSize/10) + self.board1.pos[0],
+								(g[1]*boardSize/10) + self.board1.pos[1])):
+								possibleGuesses.append(g)
+
+					if possibleGuesses:
+						guess = random.choice(possibleGuesses)
+					else:
+						guess = (random.randint(0,9), random.randint(0,9))
+
+			if self.difficulty == 2:
+				mySprites = []
+				for sprite in self.board1.ships:
+					mySprites.append(sprite)
+				guess = random.choice(mySprites).pos[0]
+				# guess = self.board1.ships[random.randint(0, len(self.board1.ships)-1)].pos
+			print('guess = ', guess)
+			# Converts to screen coordinates
+			x = (guess[0]*boardSize/10) + self.board1.pos[0]
+			y = (guess[1]*boardSize/10) + self.board1.pos[1]
+			valid = self.isValidGuess("board1", (x,y))
+			print(self.board1.pos)
+			print('valid = {}, guess = {}, guessOnBoard = {}'.format(valid, guess, (x,y)))
+
+		if self.difficulty == 1:
+			self.aiLastGuess = guess
+
+		marker = "miss"
+		for ship in self.board1.ships:
+			for shipPos in ship.pos:
+				if guess == shipPos:
+					marker = "hit"
+		self.board1.addShot(marker, guess)
+
 	def gameOver(self):
 		# Clear everything
 		# Change to victory menu
 		pass
 
-	def optionAction(self):
-		self.stateName = 'optionsMenu'
+	# def optionAction(self):
+	# 	self.stateName = 'optionsMenu'
 
 	def playagainAction(self):
 		self.bannedPositions = []
@@ -336,7 +404,7 @@ class Game:
 		self.playerORai += 1
 		self.playerORai %= 2
 		for button in self.state.buttons:
-			if not button.name.find('Play Against: '): # Changes the button text
+			if not button.name.find('Play Against: '): # Changes the text
 				button.text = playerAI[self.playerORai]
 				button.renderText()
 
@@ -384,16 +452,5 @@ playerAI = {0: 'Player', 1: 'AI'}
 
 
 
-
-
-
-
-
-
-
-
-
 game = Game(WINDOWWIDTH, WINDOWHEIGHT)
-
-
 game.gameLoop()

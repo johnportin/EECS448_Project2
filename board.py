@@ -16,12 +16,13 @@ BG_COLOR = (83,209,212)
 
 #Quick helper function for getting board coordinates
 def coordToBoard(coord):
+	print('coord = ', coord)
 	x = coord[0] * (boardSize/10)
 	y = boardSize - (coord[1] + 1) * (boardSize/10)
 	return((x,y))
 
 class Marker(pygame.sprite.Sprite):
-	def __init__(self,png,pos, type = 0):
+	def __init__(self,png, pos, mark):
 		super(Marker,self).__init__()
 		self.image = pygame.image.load(png)
 		w, h = self.image.get_size()
@@ -30,9 +31,16 @@ class Marker(pygame.sprite.Sprite):
 		self.image = pygame.transform.scale(self.image, (int(w), int(h)))
 
 		self.rect = self.image.get_rect()
-		self.rect.topleft = coordToBoard(pos[0])
 		pygame.Surface.set_colorkey(self.image,[0,0,0])
-		self.type = type
+		self.pos = pos
+		print('pos = ', self.pos, 'lengt = ', len(self.pos))
+		if type(self.pos[0]) == int:
+			self.offset = self.pos
+		else:
+			self.offset = self.pos[0]
+
+		self.mark = mark
+		self.rect.topleft = coordToBoard(self.offset)
 
 class Ship(pygame.sprite.Sprite):
 	def __init__(self,png,pos):
@@ -116,15 +124,12 @@ class Board:
 
 	#Creates a sprite at coordinate to represent hit or miss
 	def addShot(self, mark, coord):
-		type = 0
 		if (mark == "hit"):
-			type = 1
 			png = self.assetsList["hit"]
 		else:
 			png = self.assetsList["miss"]
-
 		print(str(mark) + " at " + str(coord))
-		self.markers.add(Marker(png, coord, type))
+		self.markers.add(Marker(png, coord, mark))
 		self.drawBoard()
 		pygame.display.flip()
 
