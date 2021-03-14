@@ -534,7 +534,7 @@ class Game:
 		else:
 			self.displayFaq = True
 
-		paragraph, position = createParagraph(FAQ, FAQ_FONTSIZE, WHITE, DARKBLUE, (600, 1000))
+		paragraph, position = createParagraph(FAQ, FAQ_FONTSIZE, WHITE, DARKBLUE, (900, 1000))
 		print(self.faqPosition)
 		print(paragraph)
 		self.faqText = paragraph
