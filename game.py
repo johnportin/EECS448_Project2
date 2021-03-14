@@ -70,7 +70,7 @@ class Game:
 								title = 'BATTLESHIP',
 								bgColor = BLUE,
 								#btnTextArray = ['Start', 'Game Settings', 'Quit'],
-								btnTextArray = ['Start', 'Play Against: ' + playerAI[0], 'Difficulty: ' + difficultyDict[0], '# of Ships', 'Quit'],#
+								btnTextArray = ['Start', 'Play Against: ' + playerAI[0], 'Difficulty: ' + difficultyDict[0], '# of Ships: ' + str(self.maxShips), 'Quit'],#
 								fontSize = 20,
 								textColorArray = [WHITE] * 5,
 								plainColorArray = [DARKBLUE] * 5,#
@@ -195,23 +195,6 @@ class Game:
 			pygame.display.flip()
 			self.clock.tick(60)
 
-
-
-	# This functions get triggered by gameLoop depending on gameState
-	def start():
-		# Dunno if this will be useful, but templating.
-
-		# self.screen = p.display.set_mode(size = (850,850))
-		# self.createCleanPlate() # Replaced with Board.drawBoard()
-		# p.display.flip()
-
-		# Prompt for number of ships
-		# This is from their code
-		ships = input("Input number of ships to place:")
-		while ships not in "123456":
-			print("Wrong number! It should be 1, 2, 3, 4, 5, or 6")
-			ships = input("Input number of ships to place:")
-		return ships
 
 	# You can't quit the game in this middle of this function
 	def setup(self):
@@ -447,14 +430,6 @@ class Game:
 
 		self.board1.addShot(marker, guess)
 
-	def gameOver(self):
-		# Clear everything
-		# Change to victory menu
-		pass
-
-	# def optionAction(self):
-	# 	self.stateName = 'optionsMenu'
-
 	def playagainAction(self):
 		self.bannedPositions = []
 		self.allowedLengths = list(range(1, self.maxShips+1))
@@ -470,7 +445,7 @@ class Game:
 		self.difficulty %= 3
 		for button in self.state.buttons:
 			if not button.name.find('Difficulty: '): # Changes the difficulty text (why need NOT?)
-				button.text = difficultyDict[self.difficulty]
+				button.text = 'Difficulty: '+ difficultyDict[self.difficulty]
 				button.renderText()
 
 	def playerAIAction(self):
@@ -478,14 +453,14 @@ class Game:
 		self.playerORai %= 2
 		for button in self.state.buttons:
 			if not button.name.find('Play Against: '): # Changes the text
-				button.text = playerAI[self.playerORai]
+				button.text = 'Play Against: ' + playerAI[self.playerORai]
 				button.renderText()
 
 	def shipcountAction(self):
 		self.maxShips = max((self.maxShips + 1) % 7, 1)
 		for button in self.state.buttons:
 			if not button.name.find('#'):
-				button.text = str(self.maxShips)
+				button.text = '# of Ships: ' + str(self.maxShips)
 				button.renderText()
 		self.setAllowedLengths()
 		print(self.maxShips)
