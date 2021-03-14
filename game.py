@@ -15,8 +15,13 @@ pygame.mixer.init()
 pygame.freetype.init()
 s = 'sound'
 
+# Create sound channels for bg music and sound effects
+sfx = pygame.mixer.Channel(0)
+
+
 #starts bg music and the '(-1)' loops it forever
 music = pygame.mixer.music.load(os.path.join(s, 'BG.ogg'))
+
 pygame.mixer.music.play(-1)
 
 #variables for sounds to play on triggers
@@ -373,9 +378,11 @@ class Game:
 						isHit = True
 			self.boards[targetBoard].addShot(marker, pos)
 			if isHit:
-				pygame.mixer.Sound.play(directhit)
+				sfx.play(directhit)
+				# pygame.mixer.Sound.play(directhit)
 			else :
-				pygame.mixer.Sound.play(missed)
+				sfx.play(missed)
+				# pygame.mixer.Sound.play(missed)
 
 		print('valid = ' + str(valid))
 		return valid
