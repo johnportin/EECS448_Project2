@@ -342,7 +342,7 @@ class Game:
 
 	def ai(self):
 		# AI is always board2 and Player is always board1
-
+		pygame.time.delay(1000) # delay a short time
 		valid = False
 		guess = (-1,-1)
 		while not valid:
