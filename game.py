@@ -249,7 +249,7 @@ class Game:
 				orientation = random.choice(orientations)
 				if orientation == 'horizontal':
 					for x in range(length):
-						if (x0 + x, y0) in bannedPositions:
+						if (x0 + x, y0) in bannedPositions or x0 + x >= 10:
 							currentPositions = []
 							break
 						else:
@@ -261,7 +261,7 @@ class Game:
 						shipPlaced = True
 				else:
 					for y in range(length):
-						if (x0, y0 + y) in bannedPositions:
+						if (x0, y0 + y) in bannedPositions or y0 + y >= 10:
 							currentPositions = []
 							break
 						else:
