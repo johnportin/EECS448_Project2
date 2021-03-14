@@ -223,8 +223,11 @@ class Game:
 		self.board1.hideShips()
 		self.bannedPositions = []
 		self.allowedLengths = list(range(1, self.maxShips+1))
-		while len(self.allowedLengths) > 0:
-			self.placeShip("board2")
+		if not self.playerORai:
+			while len(self.allowedLengths) > 0:
+				self.placeShip("board2")
+		else:
+			self.placeShipsAI("board2")
 
 		self.stateName = 'guessing'
 		self.changeState()
@@ -234,6 +237,44 @@ class Game:
 
 	def setAllowedLengths(self):
 		self.allowedLengths = list(range(1, self.maxShips))
+
+	def placeShipsAI(self, board):
+		bannedPositions = []
+		orientations = ['horizontal', 'vertical']
+		for length in range(1, self.maxShips + 1):
+			shipPlaced = False
+			while not shipPlaced:
+				currentPositions = []
+				x0, y0 = random.randint(0, 9), random.randint(0, 9)
+				orientation = random.choice(orientations)
+				if orientation == 'horizontal':
+					for x in range(length):
+						if (x0 + x, y0) in bannedPositions:
+							currentPositions = []
+							break
+						else:
+							currentPositions.append((x0 + x, y0))
+					if len(currentPositions) == length:
+						bannedPositions += currentPositions
+						print('adding ship at ', currentPositions)
+						self.boards[board].addShips(length, currentPositions, orientation, False)
+						shipPlaced = True
+				else:
+					for y in range(length):
+						if (x0, y0 + y) in bannedPositions:
+							currentPositions = []
+							break
+						else:
+							currentPositions.append((x0, y0 + y))
+					if len(currentPositions) == length:
+						bannedPositions += currentPositions
+						print('adding ship at ', currentPositions)
+						self.boards[board].addShips(length, currentPositions, orientation, False)
+						shipPlaced = True
+
+
+
+
 
 	def placeShip(self, activeBoard): # might move this into board.py
 		# Mouse click on square = origin of ship
