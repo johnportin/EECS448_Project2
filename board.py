@@ -25,15 +25,17 @@ class Marker(pygame.sprite.Sprite):
 	def __init__(self,png, pos, mark):
 		super(Marker,self).__init__()
 		self.image = pygame.image.load(png)
-		w, h = self.image.get_size()
-		w *= (boardSize / 750) / 8
-		h *= (boardSize / 750) / 8
-		self.image = pygame.transform.scale(self.image, (int(w), int(h)))
+		# w, h = self.image.get_size()
+		# w *= (boardSize / 750) / 8
+		# h *= (boardSize / 750) / 8
 
+		self.w = int(boardSize / 10)
+		self.h = int(boardSize / 10)
+		# self.image = pygame.transform.scale(self.image, (int(w), int(h)))
+		self.image = pygame.transform.smoothscale(self.image, (self.w, self.h))
 		self.rect = self.image.get_rect()
 		pygame.Surface.set_colorkey(self.image,[0,0,0])
 		self.pos = pos
-		print('pos = ', self.pos, 'lengt = ', len(self.pos))
 		if type(self.pos[0]) == int:
 			self.offset = self.pos
 		else:
@@ -41,6 +43,9 @@ class Marker(pygame.sprite.Sprite):
 
 		self.mark = mark
 		self.rect.topleft = coordToBoard(self.offset)
+
+	def draw(self, surface):
+		surface.blit(self.image, self.rect)
 
 class Ship(pygame.sprite.Sprite):
 	def __init__(self,png,pos):

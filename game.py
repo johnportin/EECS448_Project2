@@ -15,8 +15,13 @@ pygame.mixer.init()
 pygame.freetype.init()
 s = 'sound'
 
+# Create sound channels for bg music and sound effects
+sfx = pygame.mixer.Channel(0)
+
+
 #starts bg music and the '(-1)' loops it forever
 music = pygame.mixer.music.load(os.path.join(s, 'BG.ogg'))
+
 pygame.mixer.music.play(-1)
 
 #variables for sounds to play on triggers
@@ -140,6 +145,8 @@ class Game:
 				self.board2.drawBoard()
 				pygame.display.flip()
 				self.setup()
+				for board in self.boards.values():
+					board.hideShips()
 
 			if self.stateName == 'guessing':
 				if self.playerORai == 1 and self.currentPlayer == 'board2':
@@ -346,11 +353,18 @@ class Game:
 
 		mouseCoords = event.pos
 		pos = coordToBoard(mouseCoords)
-		print('target board rect = {}'.format(self.boards[targetBoard].rect))
 
+		# This kind of argument should be unnecessary, or go somewhere else.
+		# this works as a temporary fix
+		if targetBoard == 'board1':
+			newX = mouseCoords[0] - self.boards[targetBoard].pos[0]
+			newY = mouseCoords[1] - self.boards[targetBoard].pos[1]
+		else:
+			newX = mouseCoords[0]
+			newY = mouseCoords[1]
 		valid = self.boards[targetBoard].rect.collidepoint(mouseCoords)
 		for marker in self.boards[targetBoard].markers:
-			if marker.rect.collidepoint(mouseCoords):
+			if marker.rect.collidepoint((newX, newY)):
 				valid = False
 
 		# Is hit or miss?
@@ -364,9 +378,11 @@ class Game:
 						isHit = True
 			self.boards[targetBoard].addShot(marker, pos)
 			if isHit:
-				pygame.mixer.Sound.play(directhit)
+				sfx.play(directhit)
+				# pygame.mixer.Sound.play(directhit)
 			else :
-				pygame.mixer.Sound.play(missed)
+				sfx.play(missed)
+				# pygame.mixer.Sound.play(missed)
 
 		print('valid = ' + str(valid))
 		return valid
@@ -424,8 +440,6 @@ class Game:
 				if (guess == marker.pos) or (guess == (-1,-1)):
 					valid = False
 
-			print('valid = {}, guess = {}'.format(valid, guess))
-
 		marker = "miss"
 		for ship in self.board1.ships:
 			for shipPos in ship.pos:
@@ -470,8 +484,8 @@ class Game:
 				button.text = '# of Ships: ' + str(self.maxShips)
 				button.renderText()
 		self.setAllowedLengths()
-		print(self.maxShips)
-		print(self.allowedLengths)
+		# print(self.maxShips)
+		# print(self.allowedLengths)
 
 	def startAction(self):
 		# You could do this in the main event loop after the game ends
