@@ -367,16 +367,12 @@ class Game:
 		mouseCoords = event.pos
 		pos = coordToBoard(mouseCoords)
 
-		# This kind of argument should be unnecessary, or go somewhere else.
-		# this works as a temporary fix
-		if targetBoard == 'board1':
-			newX = mouseCoords[0] - self.boards[targetBoard].pos[0]
-			newY = mouseCoords[1] - self.boards[targetBoard].pos[1]
-		else:
-			newX = mouseCoords[0]
-			newY = mouseCoords[1]
+		newX = mouseCoords[0] - self.boards[targetBoard].pos[0]
+		newY = mouseCoords[1] - self.boards[targetBoard].pos[1]
+
 		valid = self.boards[targetBoard].rect.collidepoint(mouseCoords)
 		for marker in self.boards[targetBoard].markers:
+			print(marker.rect, newX, newY)
 			if marker.rect.collidepoint((newX, newY)):
 				valid = False
 
@@ -392,10 +388,8 @@ class Game:
 			self.boards[targetBoard].addShot(marker, pos)
 			if isHit:
 				sfx.play(directhit)
-				# pygame.mixer.Sound.play(directhit)
 			else :
 				sfx.play(missed)
-				# pygame.mixer.Sound.play(missed)
 
 		print('valid = ' + str(valid))
 		return valid
