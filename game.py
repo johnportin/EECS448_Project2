@@ -314,14 +314,18 @@ class Game:
 		valid = self.isValidGuess(targetBoard, mouseCoords)
 
 		# Is hit or miss?
+		isHit = False
 		if valid:
 			marker = "miss"
-			pygame.mixer.Sound.play(missed)
 			for ship in self.boards[targetBoard].ships:
 				for shipPos in ship.pos:
 					if pos[0] == shipPos:
 						marker = "hit"
-						pygame.mixer.Sound.play(directhit)
+						isHit = True
+			if isHit:
+				pygame.mixer.Sound.play(directhit)
+			else:
+				pygame.mixer.Sound.play(missed)
 			self.boards[targetBoard].addShot(marker, pos)
 		print('valid = ' + str(valid))
 		return valid
