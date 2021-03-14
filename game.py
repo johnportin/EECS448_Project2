@@ -18,7 +18,6 @@ pygame.freetype.init()
 
 
 
-
 class Game:
 	def __init__(self, width, height):
 		pygame.init()
