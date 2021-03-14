@@ -151,6 +151,10 @@ class Game:
 					if event.type == pygame.QUIT:
 						pygame.quit()
 						sys.exit()
+					if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+						self.boards[self.currentPlayer].showShips()
+					if event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
+						self.boards[self.currentPlayer].hideShips()
 					if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
 						self.stateName = 'mainMenu'
 						for board in self.boards.values():
@@ -306,8 +310,8 @@ class Game:
 
 
 	def guess(self, event, ownBoard, targetBoard):
-		self.boards[ownBoard].showShips()
-		self.boards[targetBoard].hideShips()
+		# self.boards[ownBoard].showShips()
+		# self.boards[targetBoard].hideShips()
 
 		mouseCoords = event.pos
 		pos = coordToBoard(mouseCoords)
