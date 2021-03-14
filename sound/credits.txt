@@ -16,3 +16,6 @@ Splash SFX: "Splash, Jumping, E.wav" by InspectorJ (www.jshaw.co.uk) of Freesoun
 	-permissed with credit
 
 BG Music: 
+	Voxel Revolution by Kevin MacLeod
+	Link: https://filmmusic.io/song/7017-voxel-revolution
+	License: https://filmmusic.io/standard-license
