@@ -316,13 +316,18 @@ class Game:
 		# Is hit or miss?
 		if valid:
 			marker = "miss"
-			pygame.mixer.Sound.play(missed)
+			isHit = False
 			for ship in self.boards[targetBoard].ships:
 				for shipPos in ship.pos:
 					if pos[0] == shipPos:
 						marker = "hit"
-						pygame.mixer.Sound.play(directhit)
+						isHit = True
 			self.boards[targetBoard].addShot(marker, pos)
+			if isHit:
+				pygame.mixer.Sound.play(directhit)
+			else :
+				pygame.mixer.Sound.play(missed)
+
 		print('valid = ' + str(valid))
 		return valid
 
