@@ -164,6 +164,8 @@ class Game:
 							else:
 								self.currentPlayer = 'board1'
 								self.otherPlayer = 'board2'
+							for board in self.boards.values():
+								board.hideShips()
 
 								# self.playerORai == 1
 
@@ -315,22 +317,22 @@ class Game:
 		for marker in self.boards[targetBoard].markers:
 			if marker.rect.collidepoint(mouseCoords):
 				valid = False
-		return valid
 
 		# Is hit or miss?
-		isHit = False
 		if valid:
 			marker = "miss"
+			isHit = False
 			for ship in self.boards[targetBoard].ships:
 				for shipPos in ship.pos:
 					if pos[0] == shipPos:
 						marker = "hit"
 						isHit = True
+			self.boards[targetBoard].addShot(marker, pos)
 			if isHit:
 				pygame.mixer.Sound.play(directhit)
-			else:
+			else :
 				pygame.mixer.Sound.play(missed)
-			self.boards[targetBoard].addShot(marker, pos)
+
 		print('valid = ' + str(valid))
 		return valid
 
