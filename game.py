@@ -311,7 +311,11 @@ class Game:
 		pos = coordToBoard(mouseCoords)
 		print('target board rect = {}'.format(self.boards[targetBoard].rect))
 
-		valid = self.isValidGuess(targetBoard, mouseCoords)
+		valid = self.boards[targetBoard].rect.collidepoint(mouseCoords)
+		for marker in self.boards[targetBoard].markers:
+			if marker.rect.collidepoint(mouseCoords):
+				valid = False
+		return valid
 
 		# Is hit or miss?
 		if valid:
@@ -324,13 +328,6 @@ class Game:
 						pygame.mixer.Sound.play(directhit)
 			self.boards[targetBoard].addShot(marker, pos)
 		print('valid = ' + str(valid))
-		return valid
-
-	def isValidGuess(self, targetBoard, mouseCoords):
-		valid = self.boards[targetBoard].rect.collidepoint(mouseCoords)
-		for marker in self.boards[targetBoard].markers:
-			if marker.rect.collidepoint(mouseCoords):
-				valid = False
 		return valid
 
 	def ai(self):
@@ -354,9 +351,13 @@ class Game:
 							print('myGuess = ', myGuess)
 							myGuess[i] = myGuess[i] + j
 							g = tuple(myGuess)
-							if self.isValidGuess(
-								"board1", ((g[0]*boardSize/10) + self.board1.pos[0],
-								(g[1]*boardSize/10) + self.board1.pos[1])):
+							
+							goodGuess = True;
+							for marker in self.board1.markers:
+								if g == marker.pos:
+									goodGuess = False
+
+							if goodGuess:
 								possibleGuesses.append(g)
 
 					if possibleGuesses:
@@ -371,12 +372,13 @@ class Game:
 				guess = random.choice(mySprites).pos[0]
 				# guess = self.board1.ships[random.randint(0, len(self.board1.ships)-1)].pos
 			print('guess = ', guess)
-			# Converts to screen coordinates
-			x = (guess[0]*boardSize/10) + self.board1.pos[0]
-			y = (guess[1]*boardSize/10) + self.board1.pos[1]
-			valid = self.isValidGuess("board1", (x,y))
-			print(self.board1.pos)
-			print('valid = {}, guess = {}, guessOnBoard = {}'.format(valid, guess, (x,y)))
+
+			valid = True;
+			for marker in self.board1.markers:
+				if guess == marker.pos:
+					valid = False
+
+			print('valid = {}, guess = {}'.format(valid, guess))
 
 		if self.difficulty == 1:
 			self.aiLastGuess = guess
