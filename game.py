@@ -54,7 +54,7 @@ class Game:
 		self.maxShips = 6
 		self.bannedPositions = []
 		self.allowedLengths = list(range(1, self.maxShips+1))
-		self.aiLastGuess = "none"
+		self.aiLastHit = []
 
 		# Set icon and app window title
 		pygame.display.set_caption("Battleship")
@@ -344,19 +344,22 @@ class Game:
 			if self.difficulty == 0:
 				guess = (random.randint(0,9), random.randint(0,9))
 			if self.difficulty == 1: # I'm sorry to whomever has to read this (It was my nomenclature)
-				if self.aiLastGuess == "none":
+				if self.aiLastHit == []:
 					guess = (random.randint(0,9), random.randint(0,9))
 				else:
 					possibleGuesses = []
 
 					for i in [0, 1]:
 						for j in [-1, 1]:
-							myGuess = list(self.aiLastGuess)
+							myGuess = list(self.aiLastHit[len(self.aiLastHit)-1])
 							print('myGuess = ', myGuess)
 							myGuess[i] = myGuess[i] + j
+
+							goodGuess = True
+							if (myGuess[i] < 0) or (myGuess[i] > 9):
+								goodGuess = False
+
 							g = tuple(myGuess)
-							
-							goodGuess = True;
 							for marker in self.board1.markers:
 								if g == marker.pos:
 									goodGuess = False
@@ -364,34 +367,37 @@ class Game:
 							if goodGuess:
 								possibleGuesses.append(g)
 
+					print("possibleGuesses: " + str(possibleGuesses))
 					if possibleGuesses:
 						guess = random.choice(possibleGuesses)
 					else:
-						guess = (random.randint(0,9), random.randint(0,9))
+						self.aiLastHit.pop()
 
 			if self.difficulty == 2:
 				mySprites = []
 				for sprite in self.board1.ships:
-					mySprites.append(sprite)
-				guess = random.choice(mySprites).pos[0]
+					for pos in sprite.pos:
+						mySprites.append(pos)
+				guess = random.choice(mySprites)
 				# guess = self.board1.ships[random.randint(0, len(self.board1.ships)-1)].pos
 			print('guess = ', guess)
 
 			valid = True;
 			for marker in self.board1.markers:
-				if guess == marker.pos:
+				if (guess == marker.pos) or (guess == (-1,-1)):
 					valid = False
 
 			print('valid = {}, guess = {}'.format(valid, guess))
-
-		if self.difficulty == 1:
-			self.aiLastGuess = guess
 
 		marker = "miss"
 		for ship in self.board1.ships:
 			for shipPos in ship.pos:
 				if guess == shipPos:
 					marker = "hit"
+
+		if (self.difficulty == 1) and (marker == "hit"):
+			self.aiLastHit.append(guess)
+
 		self.board1.addShot(marker, guess)
 
 	def gameOver(self):
