@@ -4,24 +4,25 @@ import pygame.freetype
 from pygame.sprite import RenderUpdates
 from pygame.sprite import Sprite
 
-from auxx import createText
+from auxx import *
 
 BLUE = (106, 159, 181)
 DARKBLUE = (0, 0, 55)
 RED = (255, 50, 50)
 WHITE = (255, 255, 255)
 GREEN = (0, 200, 0)
-BTNHEIGHT = 50
-BTNWIDTH = 300
+# BTNHEIGHT = 50
+# BTNWIDTH = 300
 
 class Button(Sprite):
     def __init__(self, text, fontSize, textColor, plainColor, highlightedColor,
-                  centeredPosition, action = None):
+                  centeredPosition, dim, action = None):
         Sprite.__init__(self)
         self.name = text
         self.font = pygame.font.SysFont("Courier", fontSize, bold=True)
         self.text = text
         self.renderedText = None
+        self.dim = dim
         self.fontSize = fontSize
         self.textColor = textColor
         self.plainColor = plainColor
@@ -31,8 +32,10 @@ class Button(Sprite):
         self.clicked = False
         self.centeredPosition = centeredPosition
         self.clickedText = None # Maybe use to change the text upon clicking?
-        self.rect = pygame.Rect((centeredPosition, (BTNWIDTH, BTNHEIGHT)))
+        self.rect = pygame.Rect((centeredPosition, self.dim))
+        self.rect.center = self.centeredPosition
         self.action = action # implement a callback feature
+
         self.renderText()
 
     def renderText(self):

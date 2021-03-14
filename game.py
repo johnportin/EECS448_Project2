@@ -66,23 +66,32 @@ class Game:
 		pygame.display.set_icon(pygame.image.load("Assets/icon.png"))
 
 		# Options
-		self.mute = False
 		self.difficulty = 0
 		self.playerORai = 0
+		self.musicLevel = 4
+		self.sfxLevel = 4
 
 		gameStates = {
 			'mainMenu'	: 	Menu(
 								title = 'BATTLESHIP',
 								bgColor = BLUE,
 								#btnTextArray = ['Start', 'Game Settings', 'Quit'],
-								btnTextArray = ['Start', 'Play Against: ' + playerAI[0], 'Difficulty: ' + difficultyDict[0], '# of Ships: ' + str(self.maxShips), 'Quit'],#
-								fontSize = 20,
-								textColorArray = [WHITE] * 5,
-								plainColorArray = [DARKBLUE] * 5,#
-								highlightedColorArray = [RED] * 5,#
-								centeredPositionArray = [(WINDOWWIDTH/2-150, WINDOWHEIGHT/2 - 200), (WINDOWWIDTH/2-150, WINDOWHEIGHT/2 - 100),(WINDOWWIDTH/2-150, WINDOWHEIGHT/2), (WINDOWWIDTH/2-150, WINDOWHEIGHT/2 + 100 ), (WINDOWWIDTH/2-150, (WINDOWHEIGHT/2) + 200)],#
+								btnTextArray = ['Start', 'Play Against: ' + playerAI[0], 'Difficulty: ' + difficultyDict[0], '# of Ships: ' + str(self.maxShips), 'Quit', 'FAQ', 'SFX:' + str(self.sfxLevel * 25), 'BGM:' + str(self.musicLevel* 25)],#
+								fontSize = [FONTSIZE] * 5 + [FONTSIZE * 2] * 3,
+								textColorArray = [WHITE] * 8,
+								plainColorArray = [DARKBLUE] * 8,#
+								highlightedColorArray = [RED] * 8,#
+								dim = [(BTNWIDTH, BTNHEIGHT)] * 5 + [(BTNWIDTH_SMALL * 2, BTNWIDTH_SMALL)] * 3,
+								centeredPositionArray = [(WINDOWWIDTH/2, WINDOWHEIGHT/2 - 2 * (BTNHEIGHT * BTNSPACING)),
+														(WINDOWWIDTH/2, WINDOWHEIGHT/2 - (BTNHEIGHT * BTNSPACING)),
+														(WINDOWWIDTH/2, WINDOWHEIGHT/2),
+														(WINDOWWIDTH/2, WINDOWHEIGHT/2 + BTNHEIGHT * BTNSPACING ),
+														(WINDOWWIDTH/2, WINDOWHEIGHT/2 + 2 * BTNHEIGHT * BTNSPACING),
+														(WINDOWWIDTH * 0.7, WINDOWHEIGHT * 0.85),
+														(WINDOWWIDTH * 0.8, WINDOWHEIGHT * 0.85),
+														(WINDOWWIDTH * 0.9, WINDOWHEIGHT * 0.85)],#
 								#actionArray = [self.startAction, self.optionAction, quitGame]),s
-								actionArray = [self.startAction, self.playerAIAction, self.difficultyAction, self.shipcountAction, quitGame]), #
+								actionArray = [self.startAction, self.playerAIAction, self.difficultyAction, self.shipcountAction, quitGame, defaultAction, self.sfxVolumeAction, self.musicVolumeAction]), #
 
 			# 'optionsMenu' : Menu(z
 			# 					title = 'Options',
@@ -99,11 +108,15 @@ class Game:
 								title = 'Game Over',
 								bgColor = BLUE,
 								btnTextArray = ['Play Again', 'Return to Main', 'Quit'],
-								fontSize = 20,
+								fontSize = [FONTSIZE] * 3,
 								textColorArray = [WHITE] * 3,
 								plainColorArray = [DARKBLUE] * 3,
 								highlightedColorArray = [RED] * 3,
-								centeredPositionArray = [(WINDOWWIDTH/2-150, WINDOWHEIGHT/2 - 200), (WINDOWWIDTH/2-150, WINDOWHEIGHT/2 - 100), (WINDOWWIDTH/2-150, WINDOWHEIGHT/2)],#
+								dim = [(BTNWIDTH, BTNHEIGHT)] * 3,
+								centeredPositionArray = [
+									(WINDOWWIDTH/2, WINDOWHEIGHT/2 - 2 * (BTNHEIGHT * BTNSPACING)),
+									(WINDOWWIDTH/2, WINDOWHEIGHT/2 - (BTNHEIGHT * BTNSPACING)),
+									(WINDOWWIDTH/2, WINDOWHEIGHT/2)],#
 								actionArray = [self.playagainAction, self.returnAction, quitGame]),
 			'start'	:	None,
 			'guessing'	:	None,
@@ -496,10 +509,24 @@ class Game:
 
 		self.stateName = 'start'
 
-	def muteAction(self):
-		self.mute = not self.mute
-		print("muted = " + str(self.mute))
+	def musicVolumeAction(self):
+		self.musicLevel = (self.musicLevel - 1) % 5
+		pygame.mixer.music.set_volume(self.musicLevel * 0.25)
+		for button in self.state.buttons:
+			if not button.name.find('BGM'):
+				button.text = 'BGM:' + str(self.musicLevel * 25)
+				button.renderText()
 
+	def sfxVolumeAction(self):
+		self.sfxLevel = (self.sfxLevel - 1) % 5
+		sfx.set_volume(self.sfxLevel * 0.25)
+		for button in self.state.buttons:
+			if not button.name.find('SFX'):
+				button.text = 'SFX:' + str(self.sfxLevel * 25)
+				button.renderText()
+
+	def instructionsAction(self):
+		pass
 def coordToBoard(coords):
 	if (coords[0] >= game.boards["board1"].pos[0]) and (coords[0] <= game.boards["board1"].pos[0]+boardSize) and (coords[1] >= game.boards["board1"].pos[1]) and (coords[1] <= game.boards["board1"].pos[1]+boardSize):
 		brd = "board1"
