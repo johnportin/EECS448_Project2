@@ -71,6 +71,11 @@ class Game:
 		self.musicLevel = 4
 		self.sfxLevel = 4
 
+		#Faq
+		self.displayFaq = False
+		self.faqText = None
+		self.faqPosition = None
+
 		gameStates = {
 			'mainMenu'	: 	Menu(
 								title = 'BATTLESHIP',
@@ -91,7 +96,7 @@ class Game:
 														(WINDOWWIDTH / 2, WINDOWHEIGHT/2 + 3 * BTNHEIGHT * BTNSPACING ),
 														(WINDOWWIDTH / 2 + BTNWIDTH / 3, WINDOWHEIGHT/2 + 3 * BTNHEIGHT * BTNSPACING )],#
 								#actionArray = [self.startAction, self.optionAction, quitGame]),s
-								actionArray = [self.startAction, self.playerAIAction, self.difficultyAction, self.shipcountAction, quitGame, defaultAction, self.sfxVolumeAction, self.musicVolumeAction]), #
+								actionArray = [self.startAction, self.playerAIAction, self.difficultyAction, self.shipcountAction, quitGame, self.faqAction, self.sfxVolumeAction, self.musicVolumeAction]), #
 
 			# 'optionsMenu' : Menu(z
 			# 					title = 'Options',
@@ -139,6 +144,8 @@ class Game:
 	def gameLoop(self):
 		while True:
 			if self.stateName == 'mainMenu' or self.stateName == 'gameOverMenu': #or self.stateName == 'optionsMenu'
+				if self.displayFaq:
+					self.screen.blit(self.faqText, self.faqPosition)
 				for event in pygame.event.get():
 					if event.type == pygame.QUIT:
 						pygame.quit()
@@ -209,6 +216,8 @@ class Game:
 
 			if self.state:
 				self.state.update(self.screen)
+				if self.displayFaq:
+					self.screen.blit(self.faqText, self.faqPosition)
 				self.state.draw(self.screen)
 
 
@@ -519,8 +528,20 @@ class Game:
 				button.text = 'SFX:' + str(self.sfxLevel * 25)
 				button.renderText()
 
-	def instructionsAction(self):
-		pass
+	def faqAction(self):
+		if self.displayFaq:
+			self.displayFaq = False
+		else:
+			self.displayFaq = True
+
+		paragraph, position = createParagraph(FAQ, FAQ_FONTSIZE, WHITE, DARKBLUE, (600, 1000))
+		print(self.faqPosition)
+		print(paragraph)
+		self.faqText = paragraph
+		self.faqPosition = paragraph.get_rect()
+		self.faqPosition.center = (int(WINDOWWIDTH * 0.2), int(WINDOWHEIGHT / 2))
+
+
 def coordToBoard(coords):
 	if (coords[0] >= game.boards["board1"].pos[0]) and (coords[0] <= game.boards["board1"].pos[0]+boardSize) and (coords[1] >= game.boards["board1"].pos[1]) and (coords[1] <= game.boards["board1"].pos[1]+boardSize):
 		brd = "board1"

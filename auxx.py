@@ -38,6 +38,41 @@ FONTSIZE_SMALL = int(BTNHEIGHT_SMALL / 2.5)
 #850
 boardSize = (WINDOWWIDTH/2) - 100 # 750
 
+FAQ_SIZE = None
+FAQ_FONTSIZE = int(FONTSIZE * 0.7)
+FAQ	= 	"""Welcome to battleship! Prepare for war!\n
+		\n How To Play\n
+		In this game, each player can place up to six ships on their board.\n
+		Players take turns attacking enemy vessels. \n
+		The game is over when someone loses their whole fleet.\n
+		\n GameSetup \n
+		Select to play against a human or computer with the Player button.\n
+		Select the number of ships to place with the '# of Ships' button.\n
+		If playing against the computer, change the difficulty with 'Difficulty' button. \n
+		You can change the volume with the two 'BGM' and 'SFX' buttons.\n
+		\n
+		Good luck sardine, you're going to need it!"""
+
+def createParagraph(text, fontSize, textcolor, bgcolor, paragraphSize):
+	font = pygame.freetype.SysFont("Courier", fontSize, bold = False)
+
+	paragraphSurf = pygame.Surface(paragraphSize)
+
+	paragraphSurf.fill(bgcolor)
+	paragraphSurf.set_colorkey((0, 0, 0))
+
+	splitLines = text.splitlines()
+
+
+	offSet = (paragraphSize[1] - len(splitLines) * (fontSize + 1)) // 2
+
+	for idx, line in enumerate(splitLines):
+		currentTextline, _ = font.render(text=line, fgcolor=WHITE, bgcolor=DARKBLUE)
+		currentPosition = (0, idx * fontSize + offSet)
+		paragraphSurf.blit(currentTextline, currentPosition)
+
+	return paragraphSurf, paragraphSize
+
 # I stole this function from (somewhere) GIVE CREDIT
 
 def createText(text, fontSize, textcolor, bgcolor):
