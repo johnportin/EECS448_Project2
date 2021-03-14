@@ -164,6 +164,8 @@ class Game:
 							else:
 								self.currentPlayer = 'board1'
 								self.otherPlayer = 'board2'
+							for board in self.boards.values():
+								board.hideShips()
 
 								# self.playerORai == 1
 
@@ -315,7 +317,6 @@ class Game:
 		for marker in self.boards[targetBoard].markers:
 			if marker.rect.collidepoint(mouseCoords):
 				valid = False
-		return valid
 
 		# Is hit or miss?
 		if valid:
