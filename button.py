@@ -79,7 +79,7 @@ class Button(Sprite):
         elif self.mouseOver:
             color = self.hoverColor
             text = self.hoverText
-        surface.fill(pygame.Color("black"), self.rect)
+        surface.fill(pygame.Color(DARKBLUE), self.rect)
         surface.fill(color, self.rect.inflate(-4, -4))
         if self.text:
             textRect = text.get_rect(center = self.rect.center)
