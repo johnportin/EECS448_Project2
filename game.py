@@ -147,10 +147,21 @@ class Game:
 					self.currentPlayer = 'board1'
 					self.otherPlayer = 'board2'
 
+				# for board in self.boards.values():
+				# 	for marker in board.markers:
+				# 		if marker.rect.collidepoint(pygame.mouse.get_pos()):
+				# 			marker.onHover()
+				# 			marker.draw(self.screen)
+				# 		else:
+				# 			marker.offHover()
+				# 			marker.draw(self.screen)
+
 				for event in pygame.event.get():
 					if event.type == pygame.QUIT:
 						pygame.quit()
 						sys.exit()
+
+
 					if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
 						self.boards[self.currentPlayer].showShips()
 					if event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
@@ -356,11 +367,18 @@ class Game:
 
 		mouseCoords = event.pos
 		pos = coordToBoard(mouseCoords)
-		print('target board rect = {}'.format(self.boards[targetBoard].rect))
 
+		# This kind of argument should be unnecessary, or go somewhere else.
+		# this works as a temporary fix
+		if targetBoard == 'board1':
+			newX = mouseCoords[0] - self.boards[targetBoard].pos[0]
+			newY = mouseCoords[1] - self.boards[targetBoard].pos[1]
+		else:
+			newX = mouseCoords[0]
+			newY = mouseCoords[1]
 		valid = self.boards[targetBoard].rect.collidepoint(mouseCoords)
 		for marker in self.boards[targetBoard].markers:
-			if marker.rect.collidepoint(mouseCoords):
+			if marker.rect.collidepoint((newX, newY)):
 				valid = False
 
 		# Is hit or miss?
@@ -434,8 +452,6 @@ class Game:
 				if (guess == marker.pos) or (guess == (-1,-1)):
 					valid = False
 
-			print('valid = {}, guess = {}'.format(valid, guess))
-
 		marker = "miss"
 		for ship in self.board1.ships:
 			for shipPos in ship.pos:
@@ -488,8 +504,8 @@ class Game:
 				button.text = str(self.maxShips)
 				button.renderText()
 		self.setAllowedLengths()
-		print(self.maxShips)
-		print(self.allowedLengths)
+		# print(self.maxShips)
+		# print(self.allowedLengths)
 
 	def startAction(self):
 		# You could do this in the main event loop after the game ends
