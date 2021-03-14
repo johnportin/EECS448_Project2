@@ -9,9 +9,6 @@ import random
 from button import *
 from auxx import *
 
-from menu import Menu
-from button import Button
-
 pygame.init()
 pygame.font.init()
 pygame.mixer.init()
@@ -26,6 +23,12 @@ pygame.mixer.music.play(-1)
 directhit = pygame.mixer.Sound(os.path.join(s, 'hitOGG.ogg'))
 missed = pygame.mixer.Sound(os.path.join(s, 'missOGG.ogg'))
 
+
+from menu import Menu
+from button import Button
+
+
+pygame.freetype.init()
 
 
 class Game:
@@ -60,29 +63,33 @@ class Game:
 		# Options
 		self.mute = False
 		self.difficulty = 0
+		self.playerORai = 0
 
 		gameStates = {
 			'mainMenu'	: 	Menu(
 								title = 'Main Menu',
 								bgColor = BLUE,
-								btnTextArray = ['Start', 'Game Settings', 'Quit'],
+								#btnTextArray = ['Start', 'Game Settings', 'Quit'],
+								btnTextArray = ['Start', 'Play Against: ' + playerAI[0], 'Difficulty: ' + difficultyDict[0], '# of Ships', 'Quit'],#
 								fontSize = 20,
-								textColorArray = [WHITE] * 3,
-								plainColorArray = [DARKBLUE] * 3,
-								highlightedColorArray = [RED] * 3,
-								centeredPositionArray = [(WINDOWWIDTH/2-125, WINDOWHEIGHT/3), (WINDOWWIDTH/2-125, WINDOWHEIGHT/2), (WINDOWWIDTH/2-125, 2*WINDOWHEIGHT/3)],
-								actionArray = [self.startAction, self.optionAction, quitGame]),
+								textColorArray = [WHITE] * 5,
+								plainColorArray = [DARKBLUE] * 5,#
+								highlightedColorArray = [RED] * 5,#
+								centeredPositionArray = [(WINDOWWIDTH/2-150, WINDOWHEIGHT/2 - 200), (WINDOWWIDTH/2-150, WINDOWHEIGHT/2 - 100),(WINDOWWIDTH/2-150, WINDOWHEIGHT/2), (WINDOWWIDTH/2-150, WINDOWHEIGHT/2 + 100 ), (WINDOWWIDTH/2-150, (WINDOWHEIGHT/2) + 200)],#
+								#actionArray = [self.startAction, self.optionAction, quitGame]),s
+								actionArray = [self.startAction, self.playerAIAction, self.difficultyAction, self.shipcountAction, quitGame]), #
 
-			'optionsMenu' : Menu(
-								title = 'Options',
-								bgColor = BLUE,
-								btnTextArray = ['# of Ships', 'Difficulty: ' + difficultyDict[0], 'Return', 'Mute'],
-								fontSize = 20,
-								textColorArray = [WHITE] * 4,
-								plainColorArray = [DARKBLUE] * 4,
-								highlightedColorArray = [RED] * 4,
-								centeredPositionArray = [(400, 200), (400, 300), (400, 400), (400, 500)],
-								actionArray = [self.shipcountAction, self.difficultyAction, self.returnAction, self.muteAction]),
+			# 'optionsMenu' : Menu(z
+			# 					title = 'Options',
+			# 					bgColor = BLUE,
+			# 					btnTextArray = ['# of Ships', 'Difficulty: ' + difficultyDict[0], 'Return', 'Mute'],
+			# 					fontSize = 20,
+			# 					textColorArray = [WHITE] * 4,
+			# 					plainColorArray = [DARKBLUE] * 4,
+			# 					highlightedColorArray = [RED] * 4,
+			# 					centeredPositionArray = [(400, 200), (400, 300), (400, 400), (400, 500)],
+			# 					actionArray = [self.shipcountAction, self.difficultyAction, self.returnAction, self.muteAction]),
+
 			'gameOverMenu' : Menu(
 								title = 'Game Over',
 								bgColor = BLUE,
@@ -91,8 +98,8 @@ class Game:
 								textColorArray = [WHITE] * 3,
 								plainColorArray = [DARKBLUE] * 3,
 								highlightedColorArray = [RED] * 3,
-								centeredPositionArray = [(400, 300), (400, 400), (400, 500)],
-								actionArray = [defaultAction, self.returnAction, quitGame]),
+								centeredPositionArray = [(WINDOWWIDTH/2-150, WINDOWHEIGHT/2 - 200), (WINDOWWIDTH/2-150, WINDOWHEIGHT/2 - 100), (WINDOWWIDTH/2-150, WINDOWHEIGHT/2)],#
+								actionArray = [self.playagainAction, self.returnAction, quitGame]),
 			'start'	:	None,
 			'guessing'	:	None,
 			'victory'	:	None,
@@ -113,7 +120,7 @@ class Game:
 
 	def gameLoop(self):
 		while True:
-			if self.stateName == 'mainMenu' or self.stateName == 'optionsMenu' or self.stateName == 'gameOverMenu':
+			if self.stateName == 'mainMenu' or self.stateName == 'gameOverMenu': #or self.stateName == 'optionsMenu'
 				for event in pygame.event.get():
 					if event.type == pygame.QUIT:
 						pygame.quit()
@@ -128,6 +135,7 @@ class Game:
 					if event.type == pygame.QUIT:
 						pygame.quit()
 						sys.exit()
+				self.screen.fill(BLUE)
 				self.board1.drawBoard()
 				self.board2.drawBoard()
 				pygame.display.flip()
@@ -143,6 +151,11 @@ class Game:
 					if event.type == pygame.QUIT:
 						pygame.quit()
 						sys.exit()
+					if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+						self.stateName = 'mainMenu'
+						for board in self.boards.values():
+							board.clearBoard()
+						break
 					if event.type == pygame.MOUSEBUTTONDOWN:
 						if self.guess(event, self.currentPlayer, self.otherPlayer):
 							if self.currentPlayer == 'board1':
@@ -383,6 +396,11 @@ class Game:
 	# def optionAction(self):
 	# 	self.stateName = 'optionsMenu'
 
+	def playagainAction(self):
+		self.bannedPositions = []
+		self.allowedLengths = list(range(1, self.maxShips+1))
+		self.stateName = 'start'
+
 
 	def returnAction(self):
 		print('return called')
@@ -392,7 +410,7 @@ class Game:
 		self.difficulty += 1
 		self.difficulty %= 3
 		for button in self.state.buttons:
-			if not button.name.find('diff'): # Changes the difficulty text (why need NOT?)
+			if not button.name.find('Difficulty: '): # Changes the difficulty text (why need NOT?)
 				button.text = difficultyDict[self.difficulty]
 				button.renderText()
 
@@ -415,6 +433,12 @@ class Game:
 		print(self.allowedLengths)
 
 	def startAction(self):
+		# You could do this in the main event loop after the game ends
+		# If you do not do this, player 1 cannot place ships after finish a
+		# game, returning to the menu, and starting again
+		self.bannedPositions = []
+		self.allowedLengths = list(range(1, self.maxShips+1))
+
 		self.stateName = 'start'
 
 	def muteAction(self):
@@ -438,6 +462,7 @@ def coordToBoard(coords):
 
 
 difficultyDict = {0: 'Easy', 1: 'Medium', 2: 'Hard'}
+playerAI = {0: 'Player', 1: 'AI'}
 
 
 
