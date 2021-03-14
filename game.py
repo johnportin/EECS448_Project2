@@ -294,7 +294,8 @@ class Game:
 						for pos in positions:
 							self.bannedPositions.append(pos)
 
-					running = False # Exits the loop
+					if (not length) or canplace:
+						running = False # Exits the loop
 
 		# Some game logic stuff might go here
 
@@ -313,7 +314,7 @@ class Game:
 					for x in range(0, length):
 						positions.append((minX+x, pos[1]))
 						if (minX+x, pos[1]) in self.bannedPositions:
-							return length, positions, "horizontal", False
+							return False, False, False, False
 					if (length in self.allowedLengths):
 						return length, positions, "horizontal", True
 					else:
@@ -331,7 +332,7 @@ class Game:
 					for y in range(0, length):
 						positions.append((pos[0], maxY-y))
 						if (pos[0], maxY-y) in self.bannedPositions:
-							return length, positions, "vertical", False
+							return False, False, False, False
 					if (length in self.allowedLengths):
 						return length, positions, "vertical", True
 					else:
