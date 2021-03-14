@@ -44,22 +44,6 @@ class Marker(pygame.sprite.Sprite):
 		self.mark = mark
 		self.rect.topleft = coordToBoard(self.offset)
 
-		# #used for debugging
-		# self.isHovered = False
-		# self.color = (0,0,0)
-
-	# def onHover(self):
-	# 	# self.image = pygame.Rect(self.offset, (self.w, self.h))
-	# 	self.image = pygame.Surface((self.w, self.h))
-	# 	self.color = (30, 30, 30)
-	# 	self.image.fill(self.color)
-	#
-	# def offHover(self):
-	# 	# self.image = pygame.Rect(self.offset, (self.w, self.h))
-	# 	self.image = pygame.Surface((self.w, self.h))
-	# 	self.image.fill(self.color)
-	# 	self.color = (100, 100, 100)
-	#
 	def draw(self, surface):
 		surface.blit(self.image, self.rect)
 

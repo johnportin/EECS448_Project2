@@ -140,6 +140,8 @@ class Game:
 				self.board2.drawBoard()
 				pygame.display.flip()
 				self.setup()
+				for board in self.boards.values():
+					board.hideShips()
 
 			if self.stateName == 'guessing':
 				if self.playerORai == 1 and self.currentPlayer == 'board2':
@@ -147,21 +149,10 @@ class Game:
 					self.currentPlayer = 'board1'
 					self.otherPlayer = 'board2'
 
-				# for board in self.boards.values():
-				# 	for marker in board.markers:
-				# 		if marker.rect.collidepoint(pygame.mouse.get_pos()):
-				# 			marker.onHover()
-				# 			marker.draw(self.screen)
-				# 		else:
-				# 			marker.offHover()
-				# 			marker.draw(self.screen)
-
 				for event in pygame.event.get():
 					if event.type == pygame.QUIT:
 						pygame.quit()
 						sys.exit()
-
-
 					if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
 						self.boards[self.currentPlayer].showShips()
 					if event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
