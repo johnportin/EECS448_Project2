@@ -4,15 +4,13 @@ import glob
 import os
 
 from pygame import event
+from auxx import *
 
 pygame.init()
 
-info = pygame.display.Info()
 
-ASPECTRATIO = 16 / 9
-WINDOWHEIGHT = info.current_h-100 # 1670
-WINDOWWIDTH =  int(ASPECTRATIO * WINDOWHEIGHT) #850
-boardSize = (WINDOWWIDTH/2) - 100 # 750
+
+
 
 BG_COLOR = (83,209,212)
 
@@ -51,9 +49,10 @@ class Ship(pygame.sprite.Sprite):
 		self.pos = pos
 
 class Board:
-	def __init__(self, screen, pos):
+	def __init__(self, screen, pos, boardSize):
 		self.screen = screen
-		self.surface = pygame.Surface((boardSize, boardSize))
+		self.boardSize = boardSize
+		self.surface = pygame.Surface((self.boardSize, self.boardSize))
 
 		self.markers = pygame.sprite.Group() # Array of hit/miss markers
 		self.ships = pygame.sprite.Group() # Array of ship sprites
@@ -86,19 +85,19 @@ class Board:
 	def drawBoard(self):
 		# Gridlines and labels
 		for x in range(0,11):
-			xPos = (x)*boardSize/10
-			pygame.draw.line(self.surface, (0,0,0), (xPos,0), (xPos,boardSize))
+			xPos = (x)*self.boardSize/10
+			pygame.draw.line(self.surface, (0,0,0), (xPos,0), (xPos,self.boardSize))
 
 		for y in range(0,11):
-			yPos = (y)*boardSize/10
-			pygame.draw.line(self.surface, (0,0,0), (0,yPos), (boardSize,yPos))
+			yPos = (y)*self.boardSize/10
+			pygame.draw.line(self.surface, (0,0,0), (0,yPos), (self.boardSize,yPos))
 
 		textType = pygame.font.Font('freesansbold.ttf', 20)
 		#Drawing the letters on axis
 		for letter in self.letters:
 			textSurf, textRect = self.text_objects(letter, textType)
 			x = ord(letter) - 65
-			xpos = x*boardSize/10 + self.pos[0] + (boardSize*.05)
+			xpos = x*self.boardSize/10 + self.pos[0] + (self.boardSize*.05)
 			textRect.center = (xpos, 25) # Make this flexible
 			self.screen.blit(textSurf,textRect)
 
@@ -106,7 +105,7 @@ class Board:
 		for number in self.numbers:
 			textSurf, textRect = self.text_objects(number, textType)
 			x = int(number) - 1
-			ypos = boardSize + (boardSize*.05) - x*boardSize/10 - boardSize/40
+			ypos = self.boardSize + (self.boardSize*.05) - x*self.boardSize/10 - self.boardSize/40
 			textRect.center = (self.pos[0]-25, ypos)
 			self.screen.blit(textSurf,textRect)
 
@@ -155,7 +154,7 @@ class Board:
 	# Hides ships
 	def hideShips(self):
 		self.drawShips = False
-		bg = pygame.Surface((boardSize, boardSize))
+		bg = pygame.Surface((self.boardSize, self.boardSize))
 		bg.fill(BG_COLOR)
 		self.ships.clear(self.surface, bg)
 		self.drawBoard()

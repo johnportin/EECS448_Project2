@@ -15,14 +15,7 @@ from button import Button
 
 pygame.freetype.init()
 
-BLUE = (106, 159, 181)
-DARKBLUE = (0, 0, 55)
-RED = (255, 50, 50)
-WHITE = (255, 255, 255)
-GREEN = (0, 200, 0)
-BTNHEIGHT = 50
-BTNWIDTH = 100
-ASPECTRATIO = 16 / 9
+
 
 
 class Game:
@@ -36,8 +29,8 @@ class Game:
 		self.clock = pygame.time.Clock()
 
 		# Might not keep these.
-		self.board1 = Board(self.screen, (50, 50))
-		self.board2 = Board(self.screen, ((WINDOWWIDTH/2+30) , 50))
+		self.board1 = Board(self.screen, (50, 50), boardSize)
+		self.board2 = Board(self.screen, ((WINDOWWIDTH/2+30) , 50), boardSize)
 
 		self.boards = {
 			"board1": self.board1,
