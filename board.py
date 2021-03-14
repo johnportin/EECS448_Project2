@@ -133,7 +133,7 @@ class Board:
 		self.drawBoard()
 		pygame.display.flip()
 
-	def addShips(self, length, positions, orientation, hover):
+	def addShips(self, length, positions, orientation, hover, valid):
 		asset = "BS_V " if orientation == "vertical" else "BS "
 		asset += str(length)
 		ship = Ship(self.assetsList[asset], positions)
@@ -145,6 +145,12 @@ class Board:
 			# offset position
 			ship.rect[0] += self.pos[0]
 			ship.rect[1] += self.pos[1]
+
+			if not valid: # tint
+				tint = pygame.Surface(ship.image.get_size()).convert_alpha()
+				tint.fill((255, 50, 50))
+				ship.image.blit(tint, (0,0), special_flags=pygame.BLEND_RGBA_MULT)
+
 			self.screen.blit(ship.image, ship.rect)
 		else:
 			self.ships.add(ship)

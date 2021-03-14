@@ -276,19 +276,19 @@ class Game:
 
 			hover, hover_board = coordToBoard((x,y))
 			#print(hover)
-			length, positions, orientation = self.isValidShip(pos, brd, hover, hover_board, activeBoard)
+			length, positions, orientation, canplace = self.isValidShip(pos, brd, hover, hover_board, activeBoard)
 
 			if length:
 				#print(length, position, orientation)
 				# Draw transparent ship, make it go away when position changes
-				self.boards[activeBoard].addShips(length, positions, orientation, True)
+				self.boards[activeBoard].addShips(length, positions, orientation, True, canplace)
 			pygame.display.flip()
 
 			# Click - click valid, add ship. Click invalid, do nothing
 			for event in pygame.event.get():
 				if event.type == pygame.MOUSEBUTTONDOWN:
 					if length:
-						self.boards[activeBoard].addShips(length, positions, orientation, False)
+						self.boards[activeBoard].addShips(length, positions, orientation, False, True)
 						self.boards[activeBoard].showShips()
 						self.allowedLengths.remove(length)
 						for pos in positions:
@@ -300,38 +300,43 @@ class Game:
 
 	# I am quarantining this ugly code
 	def isValidShip(self, pos, brd, hover, hover_board, activeBoard):
-		# Add exception later to where you can only place on the correct board
 		if (brd == activeBoard) and (brd == hover_board): # Can't go off board
 			# Horizontal Placement
 			# Extra conditions here shouldn't be needed, but sometimes loop is buggy
 			if (pos[1] == hover[1]):
 				length = abs(pos[0] - hover[0]) + 1
 				# Only one ship of each length and can't exceed max length
-				if (length in self.allowedLengths):
+				if (length <= self.maxShips):
 					# Can't overlap other ships
 					minX = pos[0] if pos[0] < hover[0] else hover[0]
 					positions = []
 					for x in range(0, length):
 						positions.append((minX+x, pos[1]))
 						if (minX+x, pos[1]) in self.bannedPositions:
-							return False, False, False
-					return length, positions, "horizontal"
+							return length, positions, "horizontal", False
+					if (length in self.allowedLengths):
+						return length, positions, "horizontal", True
+					else:
+						return length, positions, "horizontal", False
 
 			# Vertical Placement
 			if (pos[0] == hover[0]):
 				length = abs(pos[1] - hover[1]) + 1
 
 				# Only one ship of each length and can't exceed max length
-				if (length in self.allowedLengths):
+				if (length <= self.maxShips):
 					# Can't overlap other ships
 					maxY = pos[1] if pos[1] > hover[1] else hover[1]
 					positions = []
 					for y in range(0, length):
 						positions.append((pos[0], maxY-y))
 						if (pos[0], maxY-y) in self.bannedPositions:
-							return False, False, False
-					return length, positions, "vertical"
-		return False, False, False
+							return length, positions, "vertical", False
+					if (length in self.allowedLengths):
+						return length, positions, "horizontal", True
+					else:
+						return length, positions, "horizontal", False
+		return False, False, False, False
 
 
 	def guess(self, event, ownBoard, targetBoard):
