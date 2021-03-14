@@ -77,7 +77,7 @@ class Game:
 								bgColor = BLUE,
 								#btnTextArray = ['Start', 'Game Settings', 'Quit'],
 								btnTextArray = ['Start', 'Play Against: ' + playerAI[0], 'Difficulty: ' + difficultyDict[0], '# of Ships: ' + str(self.maxShips), 'Quit', 'FAQ', 'SFX:' + str(self.sfxLevel * 25), 'BGM:' + str(self.musicLevel* 25)],#
-								fontSize = [FONTSIZE] * 5 + [FONTSIZE * 2] * 3,
+								fontSize = [FONTSIZE] * 5 + [FONTSIZE_SMALL] * 3,
 								textColorArray = [WHITE] * 8,
 								plainColorArray = [DARKBLUE] * 8,#
 								highlightedColorArray = [RED] * 8,#
@@ -87,9 +87,9 @@ class Game:
 														(WINDOWWIDTH/2, WINDOWHEIGHT/2),
 														(WINDOWWIDTH/2, WINDOWHEIGHT/2 + BTNHEIGHT * BTNSPACING ),
 														(WINDOWWIDTH/2, WINDOWHEIGHT/2 + 2 * BTNHEIGHT * BTNSPACING),
-														(WINDOWWIDTH * 0.7, WINDOWHEIGHT * 0.85),
-														(WINDOWWIDTH * 0.8, WINDOWHEIGHT * 0.85),
-														(WINDOWWIDTH * 0.9, WINDOWHEIGHT * 0.85)],#
+														(WINDOWWIDTH / 2 - BTNWIDTH / 3, WINDOWHEIGHT/2 + 3 * BTNHEIGHT * BTNSPACING ),
+														(WINDOWWIDTH / 2, WINDOWHEIGHT/2 + 3 * BTNHEIGHT * BTNSPACING ),
+														(WINDOWWIDTH / 2 + BTNWIDTH / 3, WINDOWHEIGHT/2 + 3 * BTNHEIGHT * BTNSPACING )],#
 								#actionArray = [self.startAction, self.optionAction, quitGame]),s
 								actionArray = [self.startAction, self.playerAIAction, self.difficultyAction, self.shipcountAction, quitGame, defaultAction, self.sfxVolumeAction, self.musicVolumeAction]), #
 

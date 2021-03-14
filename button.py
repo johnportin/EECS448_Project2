@@ -21,13 +21,14 @@ class Button(Sprite):
         self.name = text
         self.font = pygame.font.SysFont("Courier", fontSize, bold=True)
         self.text = text
+        self.plainText = text
         self.renderedText = None
         self.dim = dim
         self.fontSize = fontSize
-        self.textColor = textColor
-        self.plainColor = plainColor
-        self.hoverColor = highlightedColor
-        self.clickedColor = GREEN
+        self.textColor = DARKBLUE
+        self.plainColor = WHITE
+        self.hoverColor = LIGHTGREY
+        self.clickedColor = DARKGREY
         self.mouseOver = False
         self.clicked = False
         self.centeredPosition = centeredPosition
@@ -35,12 +36,15 @@ class Button(Sprite):
         self.rect = pygame.Rect((centeredPosition, self.dim))
         self.rect.center = self.centeredPosition
         self.action = action # implement a callback feature
+        self.hoverText = None
 
         self.renderText()
 
     def renderText(self):
         if self.text:
-            self.text = self.font.render(self.text, 1, GREEN)
+            self.text = self.font.render(self.text, 1, self.textColor)
+            x, y= self.text.get_rect()[2], self.text.get_rect()[3]
+            self.hoverText = pygame.transform.scale(self.text, (int(x * 1.2), int(y * 1.2)))
 
     def checkEvent(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -71,10 +75,12 @@ class Button(Sprite):
         color = self.plainColor
         if self.clicked:
             color = self.clickedColor
+            text = self.hoverText
         elif self.mouseOver:
             color = self.hoverColor
+            text = self.hoverText
         surface.fill(pygame.Color("black"), self.rect)
         surface.fill(color, self.rect.inflate(-4, -4))
         if self.text:
-            textRect = self.text.get_rect(center = self.rect.center)
+            textRect = text.get_rect(center = self.rect.center)
             surface.blit(text, textRect)
