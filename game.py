@@ -67,7 +67,7 @@ class Game:
 
 		gameStates = {
 			'mainMenu'	: 	Menu(
-								title = 'Main Menu',
+								title = 'BATTLESHIP',
 								bgColor = BLUE,
 								#btnTextArray = ['Start', 'Game Settings', 'Quit'],
 								btnTextArray = ['Start', 'Play Against: ' + playerAI[0], 'Difficulty: ' + difficultyDict[0], '# of Ships', 'Quit'],#
