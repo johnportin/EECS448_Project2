@@ -342,10 +342,10 @@ class Game:
 
 					for i in [0, 1]:
 						for j in [-1, 1]:
-							myGuess = self.aiLastGuess
+							myGuess = list(self.aiLastGuess)
 							print('myGuess = ', myGuess)
 							myGuess[i] = myGuess[i] + j
-							g = myGuess
+							g = tuple(myGuess)
 							if self.isValidGuess(
 								"board1", ((g[0]*boardSize/10) + self.board1.pos[0],
 								(g[1]*boardSize/10) + self.board1.pos[1])):
@@ -357,8 +357,12 @@ class Game:
 						guess = (random.randint(0,9), random.randint(0,9))
 
 			if self.difficulty == 2:
-				guess = self.board1.ships[rand.randint(0, len(self.board1.ships)-1)].pos
-
+				mySprites = []
+				for sprite in self.board1.ships:
+					mySprites.append(sprite)
+				guess = random.choice(mySprites).pos[0]
+				# guess = self.board1.ships[random.randint(0, len(self.board1.ships)-1)].pos
+			print('guess = ', guess)
 			# Converts to screen coordinates
 			x = (guess[0]*boardSize/10) + self.board1.pos[0]
 			y = (guess[1]*boardSize/10) + self.board1.pos[1]
