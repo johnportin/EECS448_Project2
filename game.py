@@ -70,7 +70,7 @@ class Game:
 								title = 'BATTLESHIP',
 								bgColor = BLUE,
 								#btnTextArray = ['Start', 'Game Settings', 'Quit'],
-								btnTextArray = ['Start', 'Play Against: ' + playerAI[0], 'Difficulty: ' + difficultyDict[0], '# of Ships', 'Quit'],#
+								btnTextArray = ['Start', 'Play Against: ' + playerAI[0], 'Difficulty: ' + difficultyDict[0], '# of Ships: ' + str(self.maxShips), 'Quit'],#
 								fontSize = 20,
 								textColorArray = [WHITE] * 5,
 								plainColorArray = [DARKBLUE] * 5,#
@@ -207,23 +207,6 @@ class Game:
 			self.clock.tick(60)
 
 
-
-	# This functions get triggered by gameLoop depending on gameState
-	def start():
-		# Dunno if this will be useful, but templating.
-
-		# self.screen = p.display.set_mode(size = (850,850))
-		# self.createCleanPlate() # Replaced with Board.drawBoard()
-		# p.display.flip()
-
-		# Prompt for number of ships
-		# This is from their code
-		ships = input("Input number of ships to place:")
-		while ships not in "123456":
-			print("Wrong number! It should be 1, 2, 3, 4, 5, or 6")
-			ships = input("Input number of ships to place:")
-		return ships
-
 	# You can't quit the game in this middle of this function
 	def setup(self):
 		# Player 1 places ships
@@ -282,6 +265,7 @@ class Game:
 						print('adding ship at ', currentPositions)
 						self.boards[board].addShips(length, currentPositions, orientation, False)
 						shipPlaced = True
+		self.board2.hideShips()
 
 
 
@@ -303,62 +287,68 @@ class Game:
 
 			hover, hover_board = coordToBoard((x,y))
 			#print(hover)
-			length, positions, orientation = self.isValidShip(pos, brd, hover, hover_board, activeBoard)
+			length, positions, orientation, canplace = self.isValidShip(pos, brd, hover, hover_board, activeBoard)
 
 			if length:
 				#print(length, position, orientation)
 				# Draw transparent ship, make it go away when position changes
-				self.boards[activeBoard].addShips(length, positions, orientation, True)
+				self.boards[activeBoard].addShips(length, positions, orientation, True, canplace)
 			pygame.display.flip()
 
 			# Click - click valid, add ship. Click invalid, do nothing
 			for event in pygame.event.get():
 				if event.type == pygame.MOUSEBUTTONDOWN:
-					if length:
-						self.boards[activeBoard].addShips(length, positions, orientation, False)
+					if canplace:
+						self.boards[activeBoard].addShips(length, positions, orientation, False, True)
 						self.boards[activeBoard].showShips()
 						self.allowedLengths.remove(length)
 						for pos in positions:
 							self.bannedPositions.append(pos)
 
-					running = False # Exits the loop
+					if (not length) or canplace:
+						running = False # Exits the loop
 
 		# Some game logic stuff might go here
 
 	# I am quarantining this ugly code
 	def isValidShip(self, pos, brd, hover, hover_board, activeBoard):
-		# Add exception later to where you can only place on the correct board
 		if (brd == activeBoard) and (brd == hover_board): # Can't go off board
 			# Horizontal Placement
 			# Extra conditions here shouldn't be needed, but sometimes loop is buggy
 			if (pos[1] == hover[1]):
 				length = abs(pos[0] - hover[0]) + 1
 				# Only one ship of each length and can't exceed max length
-				if (length in self.allowedLengths):
+				if (length <= self.maxShips):
 					# Can't overlap other ships
 					minX = pos[0] if pos[0] < hover[0] else hover[0]
 					positions = []
 					for x in range(0, length):
 						positions.append((minX+x, pos[1]))
 						if (minX+x, pos[1]) in self.bannedPositions:
-							return False, False, False
-					return length, positions, "horizontal"
+							return False, False, False, False
+					if (length in self.allowedLengths):
+						return length, positions, "horizontal", True
+					else:
+						return length, positions, "horizontal", False
 
 			# Vertical Placement
 			if (pos[0] == hover[0]):
 				length = abs(pos[1] - hover[1]) + 1
 
 				# Only one ship of each length and can't exceed max length
-				if (length in self.allowedLengths):
+				if (length <= self.maxShips):
 					# Can't overlap other ships
 					maxY = pos[1] if pos[1] > hover[1] else hover[1]
 					positions = []
 					for y in range(0, length):
 						positions.append((pos[0], maxY-y))
 						if (pos[0], maxY-y) in self.bannedPositions:
-							return False, False, False
-					return length, positions, "vertical"
-		return False, False, False
+							return False, False, False, False
+					if (length in self.allowedLengths):
+						return length, positions, "vertical", True
+					else:
+						return length, positions, "vertical", False
+		return False, False, False, False
 
 
 	def guess(self, event, ownBoard, targetBoard):
@@ -463,14 +453,6 @@ class Game:
 
 		self.board1.addShot(marker, guess)
 
-	def gameOver(self):
-		# Clear everything
-		# Change to victory menu
-		pass
-
-	# def optionAction(self):
-	# 	self.stateName = 'optionsMenu'
-
 	def playagainAction(self):
 		self.bannedPositions = []
 		self.allowedLengths = list(range(1, self.maxShips+1))
@@ -486,7 +468,7 @@ class Game:
 		self.difficulty %= 3
 		for button in self.state.buttons:
 			if not button.name.find('Difficulty: '): # Changes the difficulty text (why need NOT?)
-				button.text = difficultyDict[self.difficulty]
+				button.text = 'Difficulty: '+ difficultyDict[self.difficulty]
 				button.renderText()
 
 	def playerAIAction(self):
@@ -494,14 +476,14 @@ class Game:
 		self.playerORai %= 2
 		for button in self.state.buttons:
 			if not button.name.find('Play Against: '): # Changes the text
-				button.text = playerAI[self.playerORai]
+				button.text = 'Play Against: ' + playerAI[self.playerORai]
 				button.renderText()
 
 	def shipcountAction(self):
 		self.maxShips = max((self.maxShips + 1) % 7, 1)
 		for button in self.state.buttons:
 			if not button.name.find('#'):
-				button.text = str(self.maxShips)
+				button.text = '# of Ships: ' + str(self.maxShips)
 				button.renderText()
 		self.setAllowedLengths()
 		# print(self.maxShips)
