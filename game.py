@@ -26,13 +26,7 @@ pygame.mixer.music.play(-1)
 directhit = pygame.mixer.Sound(os.path.join(s, 'hitOGG.ogg'))
 missed = pygame.mixer.Sound(os.path.join(s, 'missOGG.ogg'))
 
-BLUE = (106, 159, 181)
-DARKBLUE = (0, 0, 55)
-RED = (255, 50, 50)
-WHITE = (255, 255, 255)
-GREEN = (0, 200, 0)
-BTNHEIGHT = 50
-BTNWIDTH = 100
+
 
 
 class Game:
@@ -41,12 +35,13 @@ class Game:
 		self.width = width
 		self.height = height
 		self.screen = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
+		# print('window width = {}, window height = {}'.format(WINDOWWIDTH, WINDOWHEIGHT))
 		self.screen.fill((128,128,128)) # Background color
 		self.clock = pygame.time.Clock()
 
 		# Might not keep these.
-		self.board1 = Board(self.screen, (50, 50))
-		self.board2 = Board(self.screen, ((WINDOWWIDTH/2+30) , 50))
+		self.board1 = Board(self.screen, (50, 50), boardSize)
+		self.board2 = Board(self.screen, ((WINDOWWIDTH/2+30) , 50), boardSize)
 
 		self.boards = {
 			"board1": self.board1,
@@ -126,7 +121,6 @@ class Game:
 						sys.exit()
 					for button in self.state.buttons:
 						button.checkEvent(event)
-						print(self.state)
 						# self.state.buttons.checkEvent(event)
 				self.changeState()
 
@@ -141,6 +135,11 @@ class Game:
 				self.setup()
 
 			if self.stateName == 'guessing':
+				if self.playerORai == 1 and self.currentPlayer == 'board2':
+					self.ai()
+					self.currentPlayer = 'board1'
+					self.otherPlayer = 'board2'
+
 				for event in pygame.event.get():
 					if event.type == pygame.QUIT:
 						pygame.quit()
@@ -154,7 +153,7 @@ class Game:
 								self.currentPlayer = 'board1'
 								self.otherPlayer = 'board2'
 
-								self.playerORai == 1
+								# self.playerORai == 1
 
 				# if game is over, go to menu
 				count = 0
@@ -300,7 +299,7 @@ class Game:
 		pos = coordToBoard(mouseCoords)
 		print('target board rect = {}'.format(self.boards[targetBoard].rect))
 
-		valid = isValidGuess(targetBoard, mouseCoords)
+		valid = self.isValidGuess(targetBoard, mouseCoords)
 
 		# Is hit or miss?
 		if valid:
@@ -327,18 +326,25 @@ class Game:
 
 		valid = False
 		guess = (-1,-1)
-		while (not valid):
+		while not valid:
+			print("Finding a valid guess")
 			if self.difficulty == 0:
 				guess = (random.randint(0,9), random.randint(0,9))
-			if self.difficulty == 1: # I'm sorry to whomever has to read this
+			if self.difficulty == 1: # I'm sorry to whomever has to read this (It was my nomenclature)
 				if self.aiLastGuess == "none":
 					guess = (random.randint(0,9), random.randint(0,9))
 				else:
 					possibleGuesses = []
+
 					for i in [0, 1]:
 						for j in [-1, 1]:
-							g = self.aiLastGuess[i] + j
-							if isValidGuess("board1", ((g[0]*boardSize/10) + self.board1.pos[0],((g[1]*boardSize/10) + boardSize - self.board1.pos[1]) * -1)):
+							myGuess = list(self.aiLastGuess)
+							print('myGuess = ', myGuess)
+							myGuess[i] = myGuess[i] + j
+							g = tuple(myGuess)
+							if self.isValidGuess(
+								"board1", ((g[0]*boardSize/10) + self.board1.pos[0],
+								(g[1]*boardSize/10) + self.board1.pos[1])):
 								possibleGuesses.append(g)
 
 					if possibleGuesses:
@@ -347,22 +353,28 @@ class Game:
 						guess = (random.randint(0,9), random.randint(0,9))
 
 			if self.difficulty == 2:
-				guess = self.board1.ships[rand.randint(0, len(self.board1.ships)-1)].pos
-
+				mySprites = []
+				for sprite in self.board1.ships:
+					mySprites.append(sprite)
+				guess = random.choice(mySprites).pos[0]
+				# guess = self.board1.ships[random.randint(0, len(self.board1.ships)-1)].pos
+			print('guess = ', guess)
 			# Converts to screen coordinates
 			x = (guess[0]*boardSize/10) + self.board1.pos[0]
-			y = ((guess[1]*boardSize/10) + boardSize - self.board1.pos[1]) * -1
-			valid = isValidGuess("board1", (x,y)):
+			y = (guess[1]*boardSize/10) + self.board1.pos[1]
+			valid = self.isValidGuess("board1", (x,y))
+			print(self.board1.pos)
+			print('valid = {}, guess = {}, guessOnBoard = {}'.format(valid, guess, (x,y)))
 
-		if difficulty == 1:
+		if self.difficulty == 1:
 			self.aiLastGuess = guess
 
 		marker = "miss"
 		for ship in self.board1.ships:
 			for shipPos in ship.pos:
-				if pos[0] == shipPos:
+				if guess == shipPos:
 					marker = "hit"
-		self.boards1.addShot(marker, guess)
+		self.board1.addShot(marker, guess)
 
 	def gameOver(self):
 		# Clear everything
