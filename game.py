@@ -240,7 +240,7 @@ class Game:
 					if len(currentPositions) == length:
 						bannedPositions += currentPositions
 						print('adding ship at ', currentPositions)
-						self.boards[board].addShips(length, currentPositions, orientation, False)
+						self.boards[board].addShips(length, currentPositions, orientation, False, True)
 						shipPlaced = True
 				else:
 					for y in range(length):
@@ -252,7 +252,7 @@ class Game:
 					if len(currentPositions) == length:
 						bannedPositions += currentPositions
 						print('adding ship at ', currentPositions)
-						self.boards[board].addShips(length, currentPositions, orientation, False)
+						self.boards[board].addShips(length, currentPositions, orientation, False, True)
 						shipPlaced = True
 		self.board2.hideShips()
 
