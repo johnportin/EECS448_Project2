@@ -254,6 +254,7 @@ class Game:
 						print('adding ship at ', currentPositions)
 						self.boards[board].addShips(length, currentPositions, orientation, False)
 						shipPlaced = True
+		self.board2.hideShips()
 
 
 
