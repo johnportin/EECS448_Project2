@@ -287,7 +287,7 @@ class Game:
 			# Click - click valid, add ship. Click invalid, do nothing
 			for event in pygame.event.get():
 				if event.type == pygame.MOUSEBUTTONDOWN:
-					if length:
+					if canplace:
 						self.boards[activeBoard].addShips(length, positions, orientation, False, True)
 						self.boards[activeBoard].showShips()
 						self.allowedLengths.remove(length)
@@ -333,9 +333,9 @@ class Game:
 						if (pos[0], maxY-y) in self.bannedPositions:
 							return length, positions, "vertical", False
 					if (length in self.allowedLengths):
-						return length, positions, "horizontal", True
+						return length, positions, "vertical", True
 					else:
-						return length, positions, "horizontal", False
+						return length, positions, "vertical", False
 		return False, False, False, False
 
 
