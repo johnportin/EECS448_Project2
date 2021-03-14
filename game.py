@@ -136,6 +136,11 @@ class Game:
 				self.setup()
 
 			if self.stateName == 'guessing':
+				if self.playerORai == 1 and self.currentPlayer == 'board2':
+					self.ai()
+					self.currentPlayer = 'board1'
+					self.otherPlayer = 'board2'
+
 				for event in pygame.event.get():
 					if event.type == pygame.QUIT:
 						pygame.quit()
@@ -154,7 +159,7 @@ class Game:
 								self.currentPlayer = 'board1'
 								self.otherPlayer = 'board2'
 
-								self.playerORai == 1
+								# self.playerORai == 1
 
 				# if game is over, go to menu
 				count = 0
@@ -300,7 +305,7 @@ class Game:
 		pos = coordToBoard(mouseCoords)
 		print('target board rect = {}'.format(self.boards[targetBoard].rect))
 
-		valid = isValidGuess(targetBoard, mouseCoords)
+		valid = self.isValidGuess(targetBoard, mouseCoords)
 
 		# Is hit or miss?
 		if valid:
@@ -325,18 +330,25 @@ class Game:
 
 		valid = False
 		guess = (-1,-1)
-		while (not valid):
+		while not valid:
+			print("Finding a valid guess")
 			if self.difficulty == 0:
 				guess = (random.randint(0,9), random.randint(0,9))
-			if self.difficulty == 1: # I'm sorry to whomever has to read this
+			if self.difficulty == 1: # I'm sorry to whomever has to read this (It was my nomenclature)
 				if self.aiLastGuess == "none":
 					guess = (random.randint(0,9), random.randint(0,9))
 				else:
 					possibleGuesses = []
+
 					for i in [0, 1]:
 						for j in [-1, 1]:
-							g = self.aiLastGuess[i] + j
-							if isValidGuess("board1", ((g[0]*boardSize/10) + self.board1.pos[0],((g[1]*boardSize/10) + boardSize - self.board1.pos[1]) * -1)):
+							myGuess = self.aiLastGuess
+							print('myGuess = ', myGuess)
+							myGuess[i] = myGuess[i] + j
+							g = myGuess
+							if self.isValidGuess(
+								"board1", ((g[0]*boardSize/10) + self.board1.pos[0],
+								(g[1]*boardSize/10) + self.board1.pos[1])):
 								possibleGuesses.append(g)
 
 					if possibleGuesses:
@@ -349,18 +361,20 @@ class Game:
 
 			# Converts to screen coordinates
 			x = (guess[0]*boardSize/10) + self.board1.pos[0]
-			y = ((guess[1]*boardSize/10) + boardSize - self.board1.pos[1]) * -1
-			valid = isValidGuess("board1", (x,y)):
+			y = (guess[1]*boardSize/10) + self.board1.pos[1]
+			valid = self.isValidGuess("board1", (x,y))
+			print(self.board1.pos)
+			print('valid = {}, guess = {}, guessOnBoard = {}'.format(valid, guess, (x,y)))
 
-		if difficulty == 1:
+		if self.difficulty == 1:
 			self.aiLastGuess = guess
 
 		marker = "miss"
 		for ship in self.board1.ships:
 			for shipPos in ship.pos:
-				if pos[0] == shipPos:
+				if guess == shipPos:
 					marker = "hit"
-		self.boards1.addShot(marker, guess)
+		self.board1.addShot(marker, guess)
 
 	def gameOver(self):
 		# Clear everything
