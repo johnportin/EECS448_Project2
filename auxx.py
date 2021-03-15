@@ -80,6 +80,14 @@ def createParagraph(text, fontSize, textcolor, bgcolor, paragraphSize):
 
 	return paragraphSurf, paragraphSize
 
+
+	#backButton = button(x, y, w, h, inactive, active, mainMenu()):
+
+	#for event in pygame.event.get():
+		#if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+			#self.stateName = 'mainMenu'
+			#break
+
 def createText(text, fontSize, textcolor, bgcolor):
     font = pygame.freetype.SysFont("Courier", fontSize, bold=True)
     surface, rect = font.render(text=text, fgcolor=textcolor, bgcolor=bgcolor)
