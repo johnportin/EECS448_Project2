@@ -71,13 +71,18 @@ class Game:
 		self.musicLevel = 4
 		self.sfxLevel = 4
 
+		#Faq
+		self.displayFaq = False
+		self.faqText = None
+		self.faqPosition = None
+
 		gameStates = {
 			'mainMenu'	: 	Menu(
 								title = 'BATTLESHIP',
 								bgColor = BLUE,
 								#btnTextArray = ['Start', 'Game Settings', 'Quit'],
 								btnTextArray = ['Start', 'Play Against: ' + playerAI[0], 'Difficulty: ' + difficultyDict[0], '# of Ships: ' + str(self.maxShips), 'Quit', 'FAQ', 'SFX:' + str(self.sfxLevel * 25), 'BGM:' + str(self.musicLevel* 25)],#
-								fontSize = [FONTSIZE] * 5 + [FONTSIZE * 2] * 3,
+								fontSize = [FONTSIZE] * 5 + [FONTSIZE_SMALL] * 3,
 								textColorArray = [WHITE] * 8,
 								plainColorArray = [DARKBLUE] * 8,#
 								highlightedColorArray = [RED] * 8,#
@@ -87,11 +92,11 @@ class Game:
 														(WINDOWWIDTH/2, WINDOWHEIGHT/2),
 														(WINDOWWIDTH/2, WINDOWHEIGHT/2 + BTNHEIGHT * BTNSPACING ),
 														(WINDOWWIDTH/2, WINDOWHEIGHT/2 + 2 * BTNHEIGHT * BTNSPACING),
-														(WINDOWWIDTH * 0.7, WINDOWHEIGHT * 0.85),
-														(WINDOWWIDTH * 0.8, WINDOWHEIGHT * 0.85),
-														(WINDOWWIDTH * 0.9, WINDOWHEIGHT * 0.85)],#
+														(WINDOWWIDTH / 2 - BTNWIDTH / 3, WINDOWHEIGHT/2 + 3 * BTNHEIGHT * BTNSPACING ),
+														(WINDOWWIDTH / 2, WINDOWHEIGHT/2 + 3 * BTNHEIGHT * BTNSPACING ),
+														(WINDOWWIDTH / 2 + BTNWIDTH / 3, WINDOWHEIGHT/2 + 3 * BTNHEIGHT * BTNSPACING )],#
 								#actionArray = [self.startAction, self.optionAction, quitGame]),s
-								actionArray = [self.startAction, self.playerAIAction, self.difficultyAction, self.shipcountAction, quitGame, defaultAction, self.sfxVolumeAction, self.musicVolumeAction]), #
+								actionArray = [self.startAction, self.playerAIAction, self.difficultyAction, self.shipcountAction, quitGame, self.faqAction, self.sfxVolumeAction, self.musicVolumeAction]), #
 
 			# 'optionsMenu' : Menu(z
 			# 					title = 'Options',
@@ -139,6 +144,8 @@ class Game:
 	def gameLoop(self):
 		while True:
 			if self.stateName == 'mainMenu' or self.stateName == 'gameOverMenu': #or self.stateName == 'optionsMenu'
+				if self.displayFaq:
+					self.screen.blit(self.faqText, self.faqPosition)
 				for event in pygame.event.get():
 					if event.type == pygame.QUIT:
 						pygame.quit()
@@ -209,6 +216,8 @@ class Game:
 
 			if self.state:
 				self.state.update(self.screen)
+				if self.displayFaq:
+					self.screen.blit(self.faqText, self.faqPosition)
 				self.state.draw(self.screen)
 
 
@@ -367,16 +376,12 @@ class Game:
 		mouseCoords = event.pos
 		pos = coordToBoard(mouseCoords)
 
-		# This kind of argument should be unnecessary, or go somewhere else.
-		# this works as a temporary fix
-		if targetBoard == 'board1':
-			newX = mouseCoords[0] - self.boards[targetBoard].pos[0]
-			newY = mouseCoords[1] - self.boards[targetBoard].pos[1]
-		else:
-			newX = mouseCoords[0]
-			newY = mouseCoords[1]
+		newX = mouseCoords[0] - self.boards[targetBoard].pos[0]
+		newY = mouseCoords[1] - self.boards[targetBoard].pos[1]
+
 		valid = self.boards[targetBoard].rect.collidepoint(mouseCoords)
 		for marker in self.boards[targetBoard].markers:
+			print(marker.rect, newX, newY)
 			if marker.rect.collidepoint((newX, newY)):
 				valid = False
 
@@ -392,10 +397,8 @@ class Game:
 			self.boards[targetBoard].addShot(marker, pos)
 			if isHit:
 				sfx.play(directhit)
-				# pygame.mixer.Sound.play(directhit)
 			else :
 				sfx.play(missed)
-				# pygame.mixer.Sound.play(missed)
 
 		print('valid = ' + str(valid))
 		return valid
@@ -525,8 +528,20 @@ class Game:
 				button.text = 'SFX:' + str(self.sfxLevel * 25)
 				button.renderText()
 
-	def instructionsAction(self):
-		pass
+	def faqAction(self):
+		if self.displayFaq:
+			self.displayFaq = False
+		else:
+			self.displayFaq = True
+
+		paragraph, position = createParagraph(FAQ, FAQ_FONTSIZE, WHITE, DARKBLUE, (900, 1000))
+		print(self.faqPosition)
+		print(paragraph)
+		self.faqText = paragraph
+		self.faqPosition = paragraph.get_rect()
+		self.faqPosition.center = (int(WINDOWWIDTH * 0.2), int(WINDOWHEIGHT / 2))
+
+
 def coordToBoard(coords):
 	if (coords[0] >= game.boards["board1"].pos[0]) and (coords[0] <= game.boards["board1"].pos[0]+boardSize) and (coords[1] >= game.boards["board1"].pos[1]) and (coords[1] <= game.boards["board1"].pos[1]+boardSize):
 		brd = "board1"
