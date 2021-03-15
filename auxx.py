@@ -39,7 +39,7 @@ FONTSIZE_SMALL = int(BTNHEIGHT_SMALL / 2.5)
 boardSize = (WINDOWWIDTH/2) - 100 # 750
 
 FAQ_SIZE = None
-FAQ_FONTSIZE = int(FONTSIZE * 0.7)
+FAQ_FONTSIZE = int(FONTSIZE * 0.55)
 FAQ	= 	"""Welcome to battleship! Prepare for war!
 \n    How To Play \n
 In this game, each player can place up to six ships on their board.\n
