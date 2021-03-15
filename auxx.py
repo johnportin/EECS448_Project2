@@ -54,6 +54,8 @@ You can change the volume with the two 'BGM' and 'SFX' buttons.\n
 Good luck sardine, you're going to need it!"""
 
 def createParagraph(text, fontSize, textcolor, bgcolor, paragraphSize):
+	#paragraphSize= (xsize, ysize)
+	#fontSize=font.get_height()
 	font = pygame.freetype.SysFont("Courier", fontSize, bold = True)
 
 	paragraphSurf = pygame.Surface(paragraphSize)
@@ -61,15 +63,19 @@ def createParagraph(text, fontSize, textcolor, bgcolor, paragraphSize):
 	paragraphSurf.fill(BLUE)
 	paragraphSurf.set_colorkey((0, 0, 0))
 
-	splitLines = text.splitlines(False)
-	print(splitLines)
+	splitLines = text.splitlines()#False)
+	#print(splitLines)
+
 
 
 	offSet = (paragraphSize[1] - len(splitLines) * (fontSize + 1)) // 2
 
 	for idx, line in enumerate(splitLines):
 		currentTextline, _ = font.render(text=line, fgcolor=WHITE, bgcolor=BLUE)
-		currentPosition = (0, idx * fontSize + offSet)
+		#currentPosition = (0, idx * fontSize + offSet)
+		#center paragraph
+		currentPosition = ((paragraphSize[0] - currentTextline.get_width()) // 2, #x-coordinate
+                  idx * fontSize + offSet) #y-coordinate
 		paragraphSurf.blit(currentTextline, currentPosition)
 
 	return paragraphSurf, paragraphSize
