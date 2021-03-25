@@ -1,6 +1,8 @@
 import sys
 import pygame.freetype
 
+# setup game parameters and global variables
+
 BLUE = (106, 159, 181)
 DARKBLUE = (0, 0, 55)
 RED = (255, 50, 50)
@@ -12,9 +14,10 @@ DARKGREY = (145, 157, 163)
 ASPECTRATIO = 16 / 9
 
 pygame.init()
-
 info = pygame.display.Info()
 
+# Determine height and width of game given actual screen resolution
+# and desired aspect ratio
 if info.current_w / info.current_h < ASPECTRATIO:
 	WINDOWWIDTH = info.current_w - 100
 	WINDOWHEIGHT = int(info.current_w  / ASPECTRATIO) - 100
@@ -22,17 +25,19 @@ else:
 	WINDOWHEIGHT = info.current_h-100 # 1670
 	WINDOWWIDTH =  int(ASPECTRATIO * WINDOWHEIGHT)
 
-
+# Determine size for larger buttons
 BTNHEIGHT = int(WINDOWHEIGHT / 15)
 BTNWIDTH = BTNHEIGHT * 6
 BTNSPACING = 1.5
 FONTSIZE = int(BTNHEIGHT / 2.5)
 
+# Determine size for small buttons (3 for every 1 large button)
 BTNWIDTH_SMALL = int(BTNHEIGHT * 1)
 BTNHEIGHT_SMALL = int(BTNHEIGHT * 1)
 FONTSIZE_SMALL = int(BTNHEIGHT_SMALL / 2.5)
 
-
+difficultyDict = {0: 'Easy', 1: 'Medium', 2: 'Hard'}
+playerAI = {0: 'Player', 1: 'AI'}
 
 
 #850
@@ -53,40 +58,29 @@ You can change the volume with the two 'BGM' and 'SFX' buttons.\n
 \n
 Good luck sardine, you're going to need it!"""
 
+
+
 def createParagraph(text, fontSize, textcolor, bgcolor, paragraphSize):
-	#paragraphSize= (xsize, ysize)
-	#fontSize=font.get_height()
 	font = pygame.freetype.SysFont("Courier", fontSize, bold = True)
 
+	# Create surface for faq, and set background to transparent
 	paragraphSurf = pygame.Surface(paragraphSize)
-
-	paragraphSurf.fill(BLUE)
 	paragraphSurf.set_colorkey((0, 0, 0))
 
-	splitLines = text.splitlines()#False)
-	#print(splitLines)
+	splitLines = text.splitlines()
 
-
-
+	# Calculate offset for lines
 	offSet = (paragraphSize[1] - len(splitLines) * (fontSize + 1)) // 2
 
+	# Iterate over splitLines and blit rendered line onto paragraph surface
 	for idx, line in enumerate(splitLines):
 		currentTextline, _ = font.render(text=line, fgcolor=WHITE, bgcolor=BLUE)
-		#currentPosition = (0, idx * fontSize + offSet)
-		#center paragraph
 		currentPosition = ((paragraphSize[0] - currentTextline.get_width()) // 2, #x-coordinate
                   idx * fontSize + offSet) #y-coordinate
 		paragraphSurf.blit(currentTextline, currentPosition)
 
 	return paragraphSurf, paragraphSize
 
-
-	#backButton = button(x, y, w, h, inactive, active, mainMenu()):
-
-	#for event in pygame.event.get():
-		#if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-			#self.stateName = 'mainMenu'
-			#break
 
 def createText(text, fontSize, textcolor, bgcolor):
     font = pygame.freetype.SysFont("Courier", fontSize, bold=True)
@@ -96,8 +90,6 @@ def createText(text, fontSize, textcolor, bgcolor):
 def quitGame():
     pygame.quit()
     sys.exit()
-
-
 
 def defaultAction():
     print('no action defined')

@@ -152,23 +152,27 @@ class Game:
 						sys.exit()
 					for button in self.state.buttons:
 						button.checkEvent(event)
-						# self.state.buttons.checkEvent(event)
 				self.changeState()
 
+			# initial setup of the game
 			if self.stateName == 'start':
 				for event in pygame.event.get():
 					if event.type == pygame.QUIT:
 						pygame.quit()
 						sys.exit()
+				# Blit both players boards onto the screen
 				self.screen.fill(BLUE)
 				self.board1.drawBoard()
 				self.board2.drawBoard()
 				pygame.display.flip()
+
+				#Setup ships: should be written as its own game state
 				self.setup()
 				for board in self.boards.values():
 					board.hideShips()
 
 			if self.stateName == 'guessing':
+				# AI takes turn and switches active player
 				if self.playerORai == 1 and self.currentPlayer == 'board2':
 					self.ai()
 					self.currentPlayer = 'board1'
@@ -178,44 +182,56 @@ class Game:
 					if event.type == pygame.QUIT:
 						pygame.quit()
 						sys.exit()
+					# hide/reveal ships by pressing space
 					if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
 						self.boards[self.currentPlayer].showShips()
 					if event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
 						self.boards[self.currentPlayer].hideShips()
+
+					# quit back to main menu and reset boards
 					if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
 						self.stateName = 'mainMenu'
 						for board in self.boards.values():
 							board.clearBoard()
 						break
+
+					# Process guessing event
 					if event.type == pygame.MOUSEBUTTONDOWN:
 						if self.guess(event, self.currentPlayer, self.otherPlayer):
+							# Switch active player
 							if self.currentPlayer == 'board1':
 								self.otherPlayer = 'board1'
 								self.currentPlayer = 'board2'
 							else:
 								self.currentPlayer = 'board1'
 								self.otherPlayer = 'board2'
+
+							# Hide all ships (This shouldn't be necessary)
 							for board in self.boards.values():
 								board.hideShips()
-
-								# self.playerORai == 1
 
 				# if game is over, go to menu
 				count = 0
 				for marker in self.boards[self.currentPlayer].markers:
 					if marker.mark == "hit":
 						count += 1
+				# You have n ships ,from lengths 1 to n, so the total number of
+				# spaces they occupy is n(n+1)/2
 				if count == self.maxShips * (self.maxShips + 1) // 2:
 					self.stateName = 'gameOverMenu'
+
 					#clear boards from previous iterations of the game
 					for board in self.boards.values():
 						board.clearBoard()
 				self.changeState()
 
 
-
+			# Checks is the game is in a state (Count remove the initial check probably)
+			# and redraws parts of the screen
 			if self.state:
 				self.state.update(self.screen)
+
+				# This shouldn't be here
 				if self.displayFaq:
 					self.screen.blit(self.faqText, self.faqPosition)
 				self.state.draw(self.screen)
@@ -226,49 +242,68 @@ class Game:
 
 
 	# You can't quit the game in this middle of this function
+	# This should be instantiated as a new game state
 	def setup(self):
-		# Player 1 places ships
+		# Player 1 places ships in any order
 		while len(self.allowedLengths) > 0:
 			self.placeShip("board1")
 
-		# Player 2 places ships
+		# Reset ship placement variables for player 2
+		# This should happen at the beginning of placeShips(), and the number of
+		# remaining ships should be passed as a parameter
 		self.board1.hideShips()
 		self.bannedPositions = []
 		self.allowedLengths = list(range(1, self.maxShips+1))
+
+		#place player 2 ships if player 2 is not AI, otherwise, use AI placement
 		if not self.playerORai:
 			while len(self.allowedLengths) > 0:
 				self.placeShip("board2")
 		else:
 			self.placeShipsAI("board2")
 
+		# Change to the guessing state after ship placement has concluded.
 		self.stateName = 'guessing'
 		self.changeState()
 
 
 		# self.guess("board1", "board2")
 
+	# Setter for self.allowedLengths
+	# self.allowedLengths isn't private, and this is unnecessary
 	def setAllowedLengths(self):
 		self.allowedLengths = list(range(1, self.maxShips))
 
 	def placeShipsAI(self, board):
 		bannedPositions = []
 		orientations = ['horizontal', 'vertical']
+
+		# Place ships one at a time, starting with the smallest ships
 		for length in range(1, self.maxShips + 1):
 			shipPlaced = False
 			while not shipPlaced:
+
+				# Keep track of positions occupied by ships
 				currentPositions = []
+
+				# Pick random starting point and orientation for the ship
 				x0, y0 = random.randint(0, 9), random.randint(0, 9)
 				orientation = random.choice(orientations)
 				if orientation == 'horizontal':
+					# Check to see if new boat positions intersect any occupied spaces
 					for x in range(length):
 						if (x0 + x, y0) in bannedPositions or x0 + x >= 10:
+							# reset current position if they intersect
 							currentPositions = []
 							break
 						else:
+							# Add the position if they don't intersect
 							currentPositions.append((x0 + x, y0))
+
+					# If all positions are unoccupied, go about adding the ship to the board
 					if len(currentPositions) == length:
 						bannedPositions += currentPositions
-						print('adding ship at ', currentPositions)
+						# print('adding ship at ', currentPositions)
 						self.boards[board].addShips(length, currentPositions, orientation, False, True)
 						shipPlaced = True
 				else:
@@ -283,11 +318,6 @@ class Game:
 						print('adding ship at ', currentPositions)
 						self.boards[board].addShips(length, currentPositions, orientation, False, True)
 						shipPlaced = True
-		self.board2.hideShips()
-
-
-
-
 
 	def placeShip(self, activeBoard): # might move this into board.py
 		# Mouse click on square = origin of ship
@@ -325,8 +355,6 @@ class Game:
 
 					if (not length) or canplace:
 						running = False # Exits the loop
-
-		# Some game logic stuff might go here
 
 	# I am quarantining this ugly code
 	def isValidShip(self, pos, brd, hover, hover_board, activeBoard):
@@ -410,11 +438,17 @@ class Game:
 		guess = (-1,-1)
 		while not valid:
 			print("Finding a valid guess")
+			# if ai is easy, pick a random spot
 			if self.difficulty == 0:
 				guess = (random.randint(0,9), random.randint(0,9))
-			if self.difficulty == 1: # I'm sorry to whomever has to read this (It was my nomenclature)
+
+			# if ai is medium:
+			if self.difficulty == 1:
+				# pick a random spot if the ai previous did not get a hit
 				if self.aiLastHit == []:
 					guess = (random.randint(0,9), random.randint(0,9))
+
+				# otherwise, compute possible ship locations based on previous hit
 				else:
 					possibleGuesses = []
 
@@ -442,20 +476,21 @@ class Game:
 					else:
 						self.aiLastHit.pop()
 
+			# ai in cheater mode
 			if self.difficulty == 2:
+				# make sprites iterable, and pick a random spot to attack
 				mySprites = []
 				for sprite in self.board1.ships:
 					for pos in sprite.pos:
 						mySprites.append(pos)
 				guess = random.choice(mySprites)
-				# guess = self.board1.ships[random.randint(0, len(self.board1.ships)-1)].pos
-			print('guess = ', guess)
 
 			valid = True;
 			for marker in self.board1.markers:
 				if (guess == marker.pos) or (guess == (-1,-1)):
 					valid = False
 
+		# Determine whether current guess is a hit or miss
 		marker = "miss"
 		for ship in self.board1.ships:
 			for shipPos in ship.pos:
@@ -467,19 +502,25 @@ class Game:
 
 		self.board1.addShot(marker, guess)
 
+	# Reset necessary variables to start the game again
 	def playagainAction(self):
 		self.bannedPositions = []
 		self.allowedLengths = list(range(1, self.maxShips+1))
 		self.stateName = 'start'
 
-
+	# Return to main menu and switch state
 	def returnAction(self):
 		print('return called')
 		self.stateName = 'mainMenu'
 
+	# Change difficulty and change difficulty button text
 	def difficultyAction(self):
 		self.difficulty += 1
 		self.difficulty %= 3
+
+		# Search through buttons until you find one named difficulty
+		# Should probably implement a hashtable with the buttons if
+		# frequently searching for them
 		for button in self.state.buttons:
 			if not button.name.find('Difficulty: '): # Changes the difficulty text (why need NOT?)
 				button.text = 'Difficulty: '+ difficultyDict[self.difficulty]
@@ -534,6 +575,7 @@ class Game:
 		else:
 			self.displayFaq = True
 
+		# Renders text for faq
 		paragraph, position = createParagraph(FAQ, FAQ_FONTSIZE, WHITE, DARKBLUE, (int(WINDOWWIDTH * 0.375), int(WINDOWHEIGHT * 0.7)))
 		print(self.faqPosition)
 		print(paragraph)
@@ -556,12 +598,6 @@ def coordToBoard(coords):
 	return (row, col), brd
 
 
-
-
-difficultyDict = {0: 'Easy', 1: 'Medium', 2: 'Hard'}
-playerAI = {0: 'Player', 1: 'AI'}
-
-
-
+# Initialites game and runs main game loop
 game = Game(WINDOWWIDTH, WINDOWHEIGHT)
 game.gameLoop()
